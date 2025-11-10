@@ -77,3 +77,5 @@ chrome.tabs.insertCSS = (id, details, cb) => {
 
 	chrome.scripting.insertCSS({ target, css: details.code, origin: details.cssOrigin.toUpperCase() }).then(cb);
 }
+
+self.browser = self.chrome;
