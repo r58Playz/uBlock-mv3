@@ -1,0 +1,9 @@
+services:
+  builder:
+    build: .
+    image: ublock-mv3-builder:local
+    volumes:
+      - .:/build
+    working_dir: /build
+    environment:
+      - UPDATE_URL=${UPDATE_URL}

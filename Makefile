@@ -6,7 +6,8 @@ run_options := $(filter-out $@,$(MAKECMDGOALS))
 	compare maxcost medcost mincost modifiers record wasm \
 	publish-chromium publish-edge publish-firefox \
 	publish-dev-chromium publish-dev-firefox \
-	upload-firefox upload-dev-firefox
+	upload-firefox upload-dev-firefox \
+	package-crx docker-package-crx
 
 sources := ./dist/version $(shell find ./assets -type f) $(shell find ./src -type f)
 platform := $(wildcard platform/*/*)
@@ -185,3 +186,49 @@ record:
 	@echo
 wasm:
 	@echo
+
+# ============================================================================
+# Signing and Packaging
+# ============================================================================
+
+# Configuration
+EXTENSION_NAME := uBlock-Origin-MV3
+KEY_FILE := crx-signing-key.pem
+CHROMIUM_BUILD := dist/build/uBlock0.chromium
+UPDATE_URL ?=
+
+# Generate signing key
+$(KEY_FILE):
+	openssl genrsa -out $@ 2048
+	@echo ""
+	@echo "Generated signing key: $@"
+	@echo "IMPORTANT: Keep this file private!"
+
+# Build, sign and package the extension
+# Output: dist/build/$(EXTENSION_NAME)-<id>-<version>.crx
+#         dist/build/$(EXTENSION_NAME)-<id>.xml
+package-crx: $(CHROMIUM_BUILD) $(KEY_FILE)
+ifeq ($(UPDATE_URL),)
+	$(error UPDATE_URL is required. Example: make package-crx UPDATE_URL=https://example.com/extensions)
+endif
+	VERSION=$$(jq -r '.version' $(CHROMIUM_BUILD)/manifest.json)&& \
+	EXT_ID=$$(openssl rsa -in $(KEY_FILE) -pubout -outform DER 2>/dev/null | openssl dgst -sha256 -binary | head -c 16 | xxd -p | tr '0-9a-f' 'a-p')&& \
+	CRX_FILE="dist/build/$(EXTENSION_NAME)-$${EXT_ID}-$${VERSION}.crx"&& \
+	XML_FILE="dist/build/$(EXTENSION_NAME)-$${EXT_ID}.xml"&& \
+	CRX_URL="$(UPDATE_URL)/$(EXTENSION_NAME)-$${EXT_ID}-$${VERSION}.crx"&& \
+	echo "Building CRX..."&& \
+	echo "  Version: $${VERSION}"&& \
+	echo "  Extension ID: $${EXT_ID}"&& \
+	node_modules/.bin/crx3 $(CHROMIUM_BUILD) \
+		--keyPath $(KEY_FILE) \
+		--crxPath "$${CRX_FILE}" \
+		--xmlPath "$${XML_FILE}" \
+		--crxURL "$${CRX_URL}" \
+		--appVersion "$${VERSION}"&& \
+	echo ""&& \
+	echo "=== Build Complete ==="&& \
+	echo "CRX: $${CRX_FILE}"&& \
+	echo "XML: $${XML_FILE}"
+
+docker-package-crx:
+	docker compose run --rm builder make init package-crx
