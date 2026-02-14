@@ -79,3 +79,23 @@ chrome.tabs.insertCSS = (id, details, cb) => {
 }
 
 self.browser = self.chrome;
+
+function checkUserScripts() {
+	try {
+		chrome.userScripts.getScripts();
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+globalThis.__ubo_preinit = async () => {
+	while (!checkUserScripts()) {
+        chrome.browserAction.setBadgeText({ text: "!" });
+        chrome.browserAction.setBadgeBackgroundColor({
+            color: "#FC0",
+        });
+		await new Promise(r=>setTimeout(r, 1000 * 60 * 5));
+	}
+	globalThis.__ubo_hasUserScripts = true;
+}

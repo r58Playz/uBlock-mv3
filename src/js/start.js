@@ -379,6 +379,7 @@ const createDefaultProps = ( ) => {
 
 (async ( ) => {
 // >>>>> start of async/await scope
+await globalThis.__ubo_preinit?.();
     
 try {
     ubolog(`Start sequence of loading storage-based data ${Date.now()-vAPI.T0} ms after launch`);

@@ -252,6 +252,18 @@ body.needSave #revertRules {
 #unprocessedRequestWarning > .dismiss > svg {
     width: 100%;
     }
+#userScriptsWarning {
+    align-items: center;
+    background-color: #fc0;
+    color: rgb(var(--ink-80));
+        stroke: rgb(var(--ink-80));
+    display: none;
+    font-size: var(--font-size-smaller);
+    padding: var(--popup-gap-thin);
+    }
+body.needUserScripts #userScriptsWarning {
+    display: flex;
+    }
 
 #moreOrLess {
     column-gap: 0;

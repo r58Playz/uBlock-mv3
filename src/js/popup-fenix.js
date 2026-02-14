@@ -677,6 +677,9 @@ const renderPopup = function() {
 
     // Unprocessed request(s) warning
     dom.cl.toggle(dom.root, 'warn', popupData.hasUnprocessedRequest === true);
+    dom.cl.toggle(dom.body, 'needUserScripts',
+        popupData.hasUserScripts !== true
+    );
 
     dom.cl.toggle(dom.html, 'colorBlind', popupData.colorBlindFriendly === true);
 
