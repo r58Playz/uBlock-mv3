@@ -66,6 +66,12 @@ Local build:
 4. Enable "Allow User Scripts" in the extension settings
 5. Restart Chrome
 
+CRX build (last resort):
+1. Install the CRX
+2. Add the commandline flag `--allowlisted-extension-id=<sideloaded_uBO_id>`.
+3. Enable "Allow User Scripts" in the extension settings
+4. Restart Chrome
+
 ## Issues
 1. Occasionally it tries to inject into a nonexistent frame? ~~No idea what's going on here~~ This looks like it's a browser bug, uBlock Origin Lite has the same issues
 2. Probably some of the MV2 APIs haven't been polyfilled yet so random parts are broken. It seems to be work consistently though
