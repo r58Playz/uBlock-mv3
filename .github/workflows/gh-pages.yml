@@ -77,7 +77,7 @@ jobs:
           name: Continuous Build
           tag: latest
           commit: master
-          body: "Install this CRX, then set `--allowlisted-extension-id=<uBO-extension-id>` as a command line flag, replacing `<uBO-extension-id>` with the extension ID of the CRX. You should probably use https://ublock.r58playz.dev/ instead though."
+          body: "Install this CRX, then run Chrome from the command line with the command line flag `--allowlisted-extension-id=<uBO-extension-id>`, replacing `<uBO-extension-id>` with the extension ID of the CRX. You'll need to use the flag every time. You should probably use https://ublock.r58playz.dev/ instead though."
           artifacts: uBlock.crx
           prerelease: true
 

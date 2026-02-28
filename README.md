@@ -62,13 +62,13 @@ To do this on Linux:
 Local build:
 1. Clone and `make`
 2. Load unpacked `dist/build/uBlock0.chromium` in the extensions UI
-3. Add the commandline flag `--allowlisted-extension-id=<sideloaded_uBO_id>`.
+3. Start chrome from the terminal with the command line flag `--allowlisted-extension-id=<sideloaded_uBO_id>`. You'll need to do this every time.
 4. Enable "Allow User Scripts" in the extension settings
 5. Restart Chrome
 
 CRX build (last resort):
 1. Install the CRX
-2. Add the commandline flag `--allowlisted-extension-id=<sideloaded_uBO_id>`.
+2. Start chrome from the terminal with the command line flag `--allowlisted-extension-id=<sideloaded_uBO_id>`. You'll need to do this every time.
 3. Enable "Allow User Scripts" in the extension settings
 4. Restart Chrome
 

@@ -282,7 +282,6 @@ import µb from './background.js';
 
     for ( const key in hsDefault ) {
         if ( Object.hasOwn(hsDefault, key) === false ) { continue; }
-        if ( Object.hasOwn(hsAdmin, name) ) { continue; }
         if ( typeof hs[key] !== typeof hsDefault[key] ) { continue; }
         this.hiddenSettings[key] = hs[key];
     }
