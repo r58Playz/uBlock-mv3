@@ -4758,6 +4758,7 @@ StaticNetFilteringEngine.prototype.dnrFromCompiled = function(op, context, ...ar
             if ( rule.condition.resourceTypes === undefined ) {
                 if ( rule.condition.excludedResourceTypes === undefined ) {
                     rule.condition.resourceTypes = [
+                        'image',
                         'main_frame',
                         'sub_frame',
                         'xmlhttprequest',
@@ -4765,11 +4766,16 @@ StaticNetFilteringEngine.prototype.dnrFromCompiled = function(op, context, ...ar
                 }
             }
             // https://github.com/uBlockOrigin/uBOL-home/discussions/575
-            if ( rule.condition.urlFilter === undefined ) {
+            const { urlFilter } = rule.condition;
+            if ( urlFilter === undefined ) {
                 if ( rule.condition.regexFilter === undefined ) {
                     if ( paramName !== '' ) {
                         rule.condition.urlFilter = `^${paramName}=`;
                     }
+                }
+            } else if ( urlFilter.startsWith('||') ) {
+                if ( urlFilter.toLowerCase().includes(paramName.toLowerCase()) === false ) {
+                    rule.condition.urlFilter = `${rule.condition.urlFilter}*^${paramName}=`;
                 }
             }
             if ( rule.__modifierAction === ALLOW_REALM ) {

@@ -1,3 +1,15 @@
+- [Improve `json-edit`-related scriptlets](https://github.com/gorhill/uBlock/commit/98d3e9500a)
+- [Improve `trusted-create-html` scriptlet](https://github.com/gorhill/uBlock/commit/baffd32dab)
+- [Improve `prevent-fetch` scriptlet](https://github.com/gorhill/uBlock/commit/2ce376cf1d)
+- [Fix handling of `extraMatch` parameter in `trusted-click-element` scriptlet](https://github.com/gorhill/uBlock/commit/a8ad95394d)
+- [Improve `generateContentFn` helper scriptlet](https://github.com/gorhill/uBlock/commit/7d95c58408)
+- [Improve `prevent-xhr` scriptlet](https://github.com/gorhill/uBlock/commit/168394440c)
+- [Improve `proxyApplyFn` helper scriptlet](https://github.com/gorhill/uBlock/commit/18a8fc7675)
+
+----------
+
+# 1.69.0
+
 - [Add `adthrive` shim](https://github.com/gorhill/uBlock/commit/b8bf0bbab4)
 - [Add `elem.shadowRoot` fallback in `getShadowRoot`](https://github.com/gorhill/uBlock/commit/c8b42ea819) (by @antonok-edm)
 - [Fix merging of uncommitted filters](https://github.com/gorhill/uBlock/commit/c8004c4b02)
