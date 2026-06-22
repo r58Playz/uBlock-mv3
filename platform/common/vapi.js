@@ -66,24 +66,25 @@ var vAPI = self.vAPI; // jshint ignore:line
 //   Skip text/plain documents.
 
 if (
-    // [PATCH uBlock-mv3] @SukkaW
+    // [PATCH uBlock-mv3 START] @SukkaW
     //
     // uBO include this check to skip itself on Chrome's JSON/XML/Text code view.
     //
-    // For us, Service Worker do not have DOM, so we can just remove this detection for now.
-    //
-    // TODO: We probably still need to find a way to skip uBO on JSON/XML/Text code view,
-    // maybe via OffscreenDocument?
-    //
-    // (
-    //     document instanceof HTMLDocument ||
-    //     document instanceof XMLDocument &&
-    //     document.createElement('div') instanceof HTMLDivElement
-    // ) &&
-    // (
-    //     /^image\/|^text\/plain/.test(document.contentType || '') === false
-    // ) &&
+    // For us, Service Worker do not have DOM, so we short circuit Service Worker here
     (
+        (
+            typeof ServiceWorkerGlobalScope !== "undefined"
+        ) || (
+            (
+                document instanceof HTMLDocument ||
+                document instanceof XMLDocument &&
+                document.createElement('div') instanceof HTMLDivElement
+            ) &&
+            (
+                /^image\/|^text\/plain/.test(document.contentType || '') === false
+            )
+        )
+    ) && (
         self.vAPI instanceof Object === false || vAPI.uBO !== true
     )
 ) {
