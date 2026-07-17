@@ -44,7 +44,18 @@ const i18n$ = (...args) => i18n.getMessage(...args);
 
 /******************************************************************************/
 
-const isBackgroundProcess = document.title === 'uBlock Origin Background Page';
+// [PATCH uBlock-mv3] @SukkaW
+//
+// In MV2, uBO detects the background page by checking document.title against
+// the <title> of background.html. In MV3 there is no background.html — the
+// background is a Service Worker. We detect if we are in SW directly, if so
+// we are "background process".
+//
+// Once again, in MV3 the Service Worker is the only no-DOM context that loads
+// this file, so we short-circuit with a ServiceWorkerGlobalScope check
+const isBackgroundProcess =
+    typeof ServiceWorkerGlobalScope !== "undefined" ||
+    document.title === 'uBlock Origin Background Page';
 
 if ( isBackgroundProcess !== true ) {
 
