@@ -27,21 +27,18 @@ if (
     self.browser instanceof Object &&
     // [PATCH uBlock-mv3] @SukkaW
     //
-    // uBO add this check to circumvent a specific issue:
-    // contentscript is injected directly into the DOM, but what if
-    // there is a <div id="broswer" /> that can also register self.browser?
-    //
+    // uBO's `self.browser instanceof Element` check guards against DOM
+    // pollution (e.g. <div id="browser" />).
     // See https://github.com/uBlockOrigin/uBlock-issues/issues/1914
     //
-    // However, we don't have this issue in the very first place, as we are in
-    // a Service Worker and there is no DOM pollution.
-    //
-    // self.browser instanceof Element === false
-    typeof self.browser === "object" &&
+    // In MV3 the Service Worker is the only no-DOM context that loads this
+    // file (content scripts, popup, and dashboard pages all have a real DOM).
+    // So we short-circuit with a ServiceWorkerGlobalScope check, and fall
+    // back to the original Element check for content-script contexts where
+    // DOM pollution is still possible.
     (
-        typeof Element === "function"
-            ? (self.browser instanceof Element === false)
-            : (true)
+        typeof ServiceWorkerGlobalScope !== "undefined" ||
+        self.browser instanceof Element === false
     )
 ) {
     self.chrome = self.browser;

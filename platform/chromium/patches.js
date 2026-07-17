@@ -10,7 +10,6 @@ class HTMLDocument {
 }
 
 globalThis.HTMLDocument = HTMLDocument;
-globalThis.Element = class { };
 globalThis.document = new HTMLDocument();
 globalThis.window = globalThis;
 

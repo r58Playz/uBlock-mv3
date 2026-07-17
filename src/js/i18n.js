@@ -21,9 +21,22 @@
 
 /******************************************************************************/
 
+// [PATCH uBlock-mv3] @SukkaW
+//
+// uBO's `self.browser instanceof Element` check guards against DOM pollution
+// (e.g. <div id="browser" />). See https://github.com/uBlockOrigin/uBlock-issues/issues/1914
+//
+// In MV3 the Service Worker is the only no-DOM context that loads this file
+// (content scripts, popup, and dashboard pages all have a real DOM). So we
+// short-circuit with a ServiceWorkerGlobalScope check, and fall back to the
+// original Element check for content-script contexts where DOM pollution is
+// still possible.
 const i18n =
     self.browser instanceof Object &&
-    self.browser instanceof Element === false
+    (
+        typeof ServiceWorkerGlobalScope !== "undefined" ||
+        self.browser instanceof Element === false
+    )
         ? self.browser.i18n
         : self.chrome.i18n;
 
