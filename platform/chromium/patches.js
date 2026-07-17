@@ -2,7 +2,6 @@ class HTMLDocument {
 	currentScript = {
 		src: chrome.runtime.getURL("/js/background.sw.js"),
 	}
-	title = "uBlock Origin Background Page";
 
 	createElement(type) {
 		throw new TypeError("HTMLDocument.createElement is not implemented");
@@ -10,7 +9,6 @@ class HTMLDocument {
 }
 
 globalThis.HTMLDocument = HTMLDocument;
-globalThis.Element = class { };
 globalThis.document = new HTMLDocument();
 globalThis.window = globalThis;
 
