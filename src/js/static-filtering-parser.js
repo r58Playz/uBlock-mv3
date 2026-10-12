@@ -4206,7 +4206,11 @@ export class ExtSelectorCompiler {
         const r = this.unquoteString(s);
         if ( r.i !== s.length ) { return; }
         const doc = globalThis.document;
-        if ( doc instanceof Object === false ) { return r.s; }
+        if (
+            doc instanceof Object === false ||
+            typeof doc.createExpression !== 'function' ||
+            typeof globalThis.XPathResult === 'undefined'
+        ) { return r.s; }
         try {
             const expr = doc.createExpression(r.s, null);
             expr.evaluate(doc, XPathResult.ANY_UNORDERED_NODE_TYPE);
