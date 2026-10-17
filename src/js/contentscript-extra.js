@@ -410,10 +410,15 @@ class PSelectorWatchAttrs extends PSelectorTask {
 class PSelectorXpathTask extends PSelectorTask {
     constructor(task) {
         super();
-        this.xpe = document.createExpression(task[1], null);
+        this.xpath = task[1];
+        this.xpe = null;
         this.xpr = null;
     }
     transpose(node, output) {
+        // Compile here so XPath syntax errors reach the root selector's catch.
+        if ( this.xpe === null ) {
+            this.xpe = document.createExpression(this.xpath, null);
+        }
         this.xpr = this.xpe.evaluate(
             node,
             XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
@@ -525,6 +530,20 @@ class PSelectorRoot extends PSelector {
         } catch {
         }
         return [];
+    }
+    exec(input) {
+        try {
+            return super.exec(input);
+        } catch {
+        }
+        return [];
+    }
+    test(input) {
+        try {
+            return super.test(input);
+        } catch {
+        }
+        return false;
     }
 }
 PSelectorRoot.prototype.hit = false;
