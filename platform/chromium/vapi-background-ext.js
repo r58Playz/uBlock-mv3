@@ -241,49 +241,11 @@ vAPI.prefetching = (( ) => {
 
 /******************************************************************************/
 
-vAPI.scriptletsInjector = (( ) => {
-    const parts = [
-        '(',
-        function(details) {
-            if ( self.uBO_scriptletsInjected !== undefined ) { return self.uBO_scriptletsInjected; }
-            const doc = document;
-            const { location } = doc;
-            if ( location === null ) { return; }
-            const { hostname } = location;
-            if ( hostname !== '' && details.hostname !== hostname ) { return; }
-            let script;
-            try {
-                script = doc.createElement('script');
-                script.appendChild(doc.createTextNode(details.scriptlets));
-                (doc.head || doc.documentElement).appendChild(script);
-                self.uBO_scriptletsInjected = details.filters;
-            } catch {
-            }
-            if ( script ) {
-                script.remove();
-                script.textContent = '';
-            }
-            return self.uBO_scriptletsInjected;
-        }.toString(),
-        ')(',
-            'json-slot',
-        ');',
-    ];
-    const jsonSlot = parts.indexOf('json-slot');
-    return (hostname, details) => {
-        parts[jsonSlot] = JSON.stringify({
-            hostname,
-            scriptlets: details.mainWorld,
-            filters: details.filters,
-        });
-        return parts.join('');
-    };
-})();
-
 // run with scripting.executeScript so it can access vAPI from the content script rather than be stuck inside USER_SCRIPT world
 vAPI.injectIsolatedFunc = (tabId, frameId, func, args) => {
 	const target = { tabId };
 	if ( typeof frameId === "number" ) { target.frameIds = [ frameId ]; }
+	else if ( frameId === "all" ) { target.allFrames = true; }
 	browser.scripting.executeScript({ target, func, args, injectImmediately: true }).catch((  ) => {});
 }
 

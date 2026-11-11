@@ -237,7 +237,7 @@ const update = function(tabId = undefined) {
     let newBits = 0;
     if ( µb.userSettings.contextMenuEnabled ) {
         const pageStore = tabId && µb.pageStoreFromTabId(tabId) || null;
-        if ( pageStore?.getNetFilteringSwitch() ) {
+        if ( pageStore?.isNotTrusted() ) {
             if ( µb.userFiltersAreEnabled() ) {
                 if ( pageStore.shouldApplySpecificCosmeticFilters(0) ) {
                     newBits |= BLOCK_ELEMENT_BIT;

@@ -281,7 +281,7 @@ class RedirectEngine {
             const data = orphanizeString(
                 fields.slice(2).join(encoded ? '' : '\n')
             );
-            this.resources.set(name, RedirectEntry.fromDetails({ mime, data }));
+            this.resources.set(name, RedirectEntry.fromDetails({ mime, data, origin: 'user' }));
             if ( Array.isArray(details) ) {
                 const resource = this.resources.get(name);
                 for ( const { prop, value } of details ) {
@@ -335,13 +335,14 @@ class RedirectEngine {
             })(scriptletsModule)
         ];
 
-        const store = (name, data = undefined) => {
+        const storeWAR = (name, data = undefined) => {
             const details = redirectableResources.get(name);
             const entry = RedirectEntry.fromDetails({
                 mime: mimeFromName(name),
                 data,
                 warURL: `/web_accessible_resources/${name}`,
                 params: details.params,
+                origin: 'war',
             });
             this.resources.set(name, entry);
             if ( details.alias === undefined ) { return; }
@@ -358,7 +359,7 @@ class RedirectEngine {
             return new Promise(resolve => {
                 const reader = new FileReader();
                 reader.onload = ( ) => {
-                    store(name, reader.result);
+                    storeWAR(name, reader.result);
                     resolve();
                 };
                 reader.onabort = reader.onerror = ( ) => {
@@ -369,10 +370,10 @@ class RedirectEngine {
         };
 
         const processText = (name, text) => {
-            store(name, removeTopCommentBlock(text));
+            storeWAR(name, removeTopCommentBlock(text));
         };
 
-        const process = result => {
+        const processWAR = result => {
             const match = /^\/web_accessible_resources\/([^?]+)/.exec(result.url);
             if ( match === null ) { return; }
             const name = match[1];
@@ -383,14 +384,14 @@ class RedirectEngine {
 
         for ( const [ name, details ] of redirectableResources ) {
             if ( typeof details.data !== 'string' ) {
-                store(name);
+                storeWAR(name);
                 continue;
             }
             fetches.push(
                 fetcher(`/web_accessible_resources/${name}`, {
                     responseType: details.data
                 }).then(
-                    result => process(result)
+                    result => processWAR(result)
                 )
             );
         }
