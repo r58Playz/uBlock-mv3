@@ -110,7 +110,8 @@
     "webRequestBlocking",
     "offscreen",
     "scripting",
-    "userScripts"
+    "userScripts",
+	"publicSuffix"
   ],
   "host_permissions": [
     "<all_urls>"
