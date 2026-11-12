@@ -35,16 +35,20 @@
     "message": "개인정보 처리방침",
     "description": "Link to privacy policy on GitHub (English)"
   },
+  "aboutDocumentation": {
+    "message": "문서",
+    "description": "Link to documentation in About pane"
+  },
   "popupFilteringModeLabel": {
     "message": "필터링 모드",
     "description": "Label in the popup panel for the current filtering mode"
   },
   "popupLocalToolsLabel": {
-    "message": "이 웹사이트에서는",
+    "message": "이 웹사이트에서",
     "description": "Label in the popup panel for the local tools section"
   },
   "popupTipReport": {
-    "message": "이 사이트의 이슈를 신고하기",
+    "message": "이슈 신고하기",
     "description": "Tooltip used for the 'chat' icon in the panel"
   },
   "popupTipDashboard": {
@@ -59,8 +63,12 @@
     "message": "간단히",
     "description": "Label to be used to hide popup panel sections"
   },
+  "popupNoWebsite": {
+    "message": "웹사이트가 아님",
+    "description": "Used when popup panel is opened for a local web page"
+  },
   "3pGroupDefault": {
-    "message": "기본값",
+    "message": "기본",
     "description": "Header for a ruleset section in 'Filter lists pane'"
   },
   "3pGroupAds": {
@@ -96,20 +104,24 @@
     "description": "Text label heading the import area of custom filter lists"
   },
   "customListImportPlaceholder": {
-    "message": "여기에 추가하려는 필터 목록의 URL 붙여넣기",
+    "message": "추가하려는 필터 목록의 URL 입력",
     "description": "Placeholder text which describes the purpose of the textarea widget"
+  },
+  "customListImportUserScriptsInfo": {
+    "message": "가져온 목록의 요소 숨김 및 스크립트 주입 필터를 적용하려면 uBO Lite에 사용자 스크립트 실행 권한을 허용해야 합니다.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
   },
   "customFiltersImportExportLabel": {
     "message": "가져오기 / 내보내기",
     "description": "Text label heading the import/export area of custom filters"
   },
   "customFiltersImportTextareaPlaceholder": {
-    "message": "여기에 추가하려는 요소 숨김 필터 붙여넣기",
+    "message": "추가하려는 요소 숨김 또는 스크립트 주입 필터 입력",
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
   "userScriptsInfo": {
-    "message": "가져온 목록에서 요소 숨김 또는 스크립트 주입 필터를 적용하려면, uBO Lite에 사용자 스크립트 실행 권한을 부여해야 합니다. 브라우저의 확장 프로그램 페이지(Chrome은 <code>chrome://extensions</code>, Firefox는 <code>about:addons</code>)를 열고, <b>uBO Lite</b> 세부 정보를 연 뒤, <b>사용자 스크립트 허용</b>(혹은 \"검증되지 않은 타사 스크립트 허용\")을 켜세요.",
-    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+    "message": "브라우저의 확장 프로그램 페이지(Chrome <code>chrome://extensions</code>, Firefox는 <code>about:addons</code>)를 열고, <b>uBO Lite</b> 세부 정보를 연 뒤, <b>사용자 스크립트 허용</b>(혹은 \"검증되지 않은 타사 스크립트 허용\")을 활성화하세요.",
+    "description": "A notice to inform user on how to enable 'user scripts' permission"
   },
   "aboutChangelog": {
     "message": "변경 로그",
@@ -168,7 +180,7 @@
     "description": "Label for widget to select type of issue"
   },
   "supportS6Select1Option0": {
-    "message": "-- 주제 선택 --",
+    "message": "-- 항목 선택 --",
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Select1Option1": {
@@ -176,7 +188,7 @@
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Select1Option2": {
-    "message": "오버레이나 기타 성가신 요소를 보여줍니다",
+    "message": "오버레이나 기타 방해 요소를 보여줍니다",
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Select1Option3": {
@@ -188,7 +200,7 @@
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Select1Option5": {
-    "message": "uBO Lite를 켜면 오작동합니다",
+    "message": "uBO Lite가 활성화되어 있을 때 오작동합니다",
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Select1Option6": {
@@ -196,7 +208,7 @@
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Select1Option7": {
-    "message": "악성코드, 피싱으로 유도합니다",
+    "message": "악성 소프트웨어, 피싱으로 유도합니다",
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Checkbox1": {
@@ -256,7 +268,7 @@
     "description": "The header text for the 'Behavior' section"
   },
   "autoReloadLabel": {
-    "message": "필터링 모드를 변경할 때 페이지 자동 새로고침",
+    "message": "필터링 모드 변경 시 페이지 자동 새로고침",
     "description": "Label for a checkbox in the options page"
   },
   "showBlockedCountLabel": {
@@ -283,6 +295,10 @@
     "message": "필터 제작용 샌드박스",
     "description": "Header for filter-creation section in the dashboard"
   },
+  "sandboxEditorUserScriptsInfo": {
+    "message": "샌드박스 요소 숨김 및 스크립트 주입 필터를 적용하려면 uBO Lite에 사용자 스크립트 실행 권한을 허용해야 합니다.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+  },
   "developerModeLabel": {
     "message": "개발자 모드",
     "description": "Label for a checkbox in the options page"
@@ -304,7 +320,7 @@
     "description": "Important information about the back up/restore section."
   },
   "findListsPlaceholder": {
-    "message": "목록 찾기",
+    "message": "목록 검색",
     "description": "Placeholder for the input field used to find lists"
   },
   "strictblockTitle": {
@@ -312,7 +328,7 @@
     "description": "Web page title for the strict-blocked page"
   },
   "strictblockSentence1": {
-    "message": "uBO Lite가 다음 페이지를 불러오지 못하게 했습니다.",
+    "message": "uBO Lite가 다음 페이지를 불러오지 못하도록 차단했습니다:",
     "description": "Sentence used in the strict-blocked page"
   },
   "strictblockReasonSentence1": {
@@ -320,7 +336,7 @@
     "description": "Text informing about what is causing the page to be blocked"
   },
   "strictblockRedirectSentence1": {
-    "message": "차단된 페이지에서 다른 사이트로 이동하려 합니다. 계속하시면, {{url}} 주소로 바로 이동합니다.",
+    "message": "차단된 페이지가 다른 사이트로 리다이렉션하려 합니다. 계속 진행하기로 선택하면 다음 주소로 바로 이동합니다: {{url}}",
     "description": "Text warning about an incoming redirect"
   },
   "strictblockNoParamsPrompt": {
@@ -328,7 +344,7 @@
     "description": "Label to be used for the parameter-less URL"
   },
   "strictblockBack": {
-    "message": "뒤로",
+    "message": "뒤로 이동",
     "description": "A button to go back to the previous web page"
   },
   "strictblockClose": {
@@ -344,11 +360,11 @@
     "description": "A button to navigate to the blocked page"
   },
   "zapperTipEnter": {
-    "message": "숨길 요소 선택하기",
+    "message": "요소 제거하기",
     "description": "Tooltip for the button used to enter zapper mode"
   },
   "zapperTipQuit": {
-    "message": "숨길 요소 선택 종료하기",
+    "message": "요소 제거 모드 종료",
     "description": "Tooltip for the button used to exit zapper mode"
   },
   "pickerTipEnter": {
@@ -364,7 +380,7 @@
     "description": "A label of a dropdown list"
   },
   "developOptionFilteringModeDetails": {
-    "message": "필터링 모드 상세정보",
+    "message": "필터링 모드 상세 정보",
     "description": "An option in a dropdown list"
   },
   "developOptionCustomDnrRules": {
@@ -420,7 +436,7 @@
     "description": "Message asking user to confirm reset to default settings"
   },
   "dnrRulesWarning": {
-    "message": "신뢰할 수 없는 출처의 콘텐츠를 추가하지 마십시오",
+    "message": "신뢰할 수 없는 출처의 콘텐츠는 추가하지 마세요",
     "description": "Short description of the DNR rules editor pane"
   },
   "dnrRulesCountInfo": {

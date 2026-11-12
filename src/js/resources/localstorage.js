@@ -127,57 +127,6 @@ registerScriptlet(setLocalStorageItemFn, {
     ],
 });
 
-/******************************************************************************/
-
-export function removeCacheStorageItem(
-    cacheNamePattern = '',
-    requestPattern = ''
-) {
-    if ( cacheNamePattern === '' ) { return; }
-    const safe = safeSelf();
-    const logPrefix = safe.makeLogPrefix('remove-cache-storage-item', cacheNamePattern, requestPattern);
-    const cacheStorage = self.caches;
-    if ( cacheStorage instanceof Object === false ) { return; }
-    const reCache = safe.patternToRegex(cacheNamePattern, undefined, true);
-    const reRequest = safe.patternToRegex(requestPattern, undefined, true);
-    cacheStorage.keys().then(cacheNames => {
-        for ( const cacheName of cacheNames ) {
-            if ( reCache.test(cacheName) === false ) { continue; }
-            if ( requestPattern === '' ) {
-                cacheStorage.delete(cacheName).then(result => {
-                    if ( safe.logLevel > 1 ) {
-                        safe.uboLog(logPrefix, `Deleting ${cacheName}`);
-                    }
-                    if ( result !== true ) { return; }
-                    safe.uboLog(logPrefix, `Deleted ${cacheName}: ${result}`);
-                });
-                continue;
-            }
-            cacheStorage.open(cacheName).then(cache => {
-                cache.keys().then(requests => {
-                    for ( const request of requests ) {
-                        if ( reRequest.test(request.url) === false ) { continue; }
-                        if ( safe.logLevel > 1 ) {
-                            safe.uboLog(logPrefix, `Deleting ${cacheName}/${request.url}`);
-                        }
-                        cache.delete(request).then(result => {
-                            if ( result !== true ) { return; }
-                            safe.uboLog(logPrefix, `Deleted ${cacheName}/${request.url}: ${result}`);
-                        });
-                    }
-                });
-            });
-        }
-    });
-}
-registerScriptlet(removeCacheStorageItem, {
-    name: 'remove-cache-storage-item.fn',
-    world: 'ISOLATED',
-    dependencies: [
-        safeSelf,
-    ],
-});
-
 /*******************************************************************************
  * 
  * set-local-storage-item.js
@@ -191,9 +140,9 @@ registerScriptlet(removeCacheStorageItem, {
  * 
  **/
 
-export function setLocalStorageItem(key = '', value = '') {
+export function setLocalStorageItem(key = '', value = '', ...varargs) {
     const safe = safeSelf();
-    const options = safe.getExtraArgs(Array.from(arguments), 2)
+    const options = safe.parseVarargs(varargs)
     setLocalStorageItemFn('local', false, key, value, options);
 }
 registerScriptlet(setLocalStorageItem, {
@@ -205,9 +154,9 @@ registerScriptlet(setLocalStorageItem, {
     ],
 });
 
-export function setSessionStorageItem(key = '', value = '') {
+export function setSessionStorageItem(key = '', value = '', ...varargs) {
     const safe = safeSelf();
-    const options = safe.getExtraArgs(Array.from(arguments), 2)
+    const options = safe.parseVarargs(varargs)
     setLocalStorageItemFn('session', false, key, value, options);
 }
 registerScriptlet(setSessionStorageItem, {
@@ -230,9 +179,9 @@ registerScriptlet(setSessionStorageItem, {
  * 
  **/
 
-export function trustedSetLocalStorageItem(key = '', value = '') {
+export function trustedSetLocalStorageItem(key = '', value = '', ...varargs) {
     const safe = safeSelf();
-    const options = safe.getExtraArgs(Array.from(arguments), 2)
+    const options = safe.parseVarargs(varargs)
     setLocalStorageItemFn('local', true, key, value, options);
 }
 registerScriptlet(trustedSetLocalStorageItem, {
@@ -245,9 +194,9 @@ registerScriptlet(trustedSetLocalStorageItem, {
     ],
 });
 
-export function trustedSetSessionStorageItem(key = '', value = '') {
+export function trustedSetSessionStorageItem(key = '', value = '', ...varargs) {
     const safe = safeSelf();
-    const options = safe.getExtraArgs(Array.from(arguments), 2)
+    const options = safe.parseVarargs(varargs)
     setLocalStorageItemFn('session', true, key, value, options);
 }
 registerScriptlet(trustedSetSessionStorageItem, {

@@ -45,6 +45,13 @@ const regexFromString = (s, exact = false) => {
     return new RegExp(exact ? `^${reStr}$` : reStr);
 };
 
+const triggerDOMChange = ( ) => {
+    if ( typeof vAPI !== 'object' ) { return; }
+    if ( vAPI === null ) { return; }
+    const filterer = vAPI.domFilterer && vAPI.domFilterer.proceduralFilterer;
+    filterer?.onDOMChanged([ null ]);
+};
+
 // 'P' stands for 'Procedural'
 
 class PSelectorTask {
@@ -60,6 +67,19 @@ class PSelectorVoidTask extends PSelectorTask {
         console.info(`uBO: :${task[0]}() operator does not exist`);
     }
     transpose() {
+    }
+}
+
+class PSelectorContentTask extends PSelectorTask {
+    constructor(task) {
+        super();
+        this.selector = task[1];
+    }
+    transpose(node, output) {
+        const root = node.content;
+        if ( typeof root?.querySelectorAll !== 'function' ) { return; }
+        const nodes = root.querySelectorAll(this.selector);
+        output.push(...nodes);
     }
 }
 
@@ -146,13 +166,7 @@ class PSelectorMatchesMediaTask extends PSelectorTask {
         super();
         this.mql = window.matchMedia(task[1]);
         if ( this.mql.media === 'not all' ) { return; }
-        this.mql.addEventListener('change', ( ) => {
-            if ( typeof vAPI !== 'object' ) { return; }
-            if ( vAPI === null ) { return; }
-            const filterer = vAPI.domFilterer && vAPI.domFilterer.proceduralFilterer;
-            if ( filterer instanceof Object === false ) { return; }
-            filterer.onDOMChanged([ null ]);
-        });
+        this.mql.addEventListener('change', triggerDOMChange);
     }
     transpose(node, output) {
         if ( this.mql.matches === false ) { return; }
@@ -166,12 +180,17 @@ class PSelectorMatchesPathTask extends PSelectorTask {
         this.needle = regexFromString(
             task[1].replace(/\P{ASCII}/gu, s => encodeURIComponent(s))
         );
+        if ( PSelectorMatchesPathTask.#listener ) { return; }
+        PSelectorMatchesPathTask.#listener = true;
+        if ( Boolean(self.navigation) === false ) { return; }
+        self.navigation.addEventListener('navigate', triggerDOMChange);
     }
     transpose(node, output) {
         if ( this.needle.test(self.location.pathname + self.location.search) ) {
             output.push(node);
         }
     }
+    static #listener;
 }
 
 class PSelectorMatchesPropTask extends PSelectorTask {
@@ -280,6 +299,7 @@ class PSelectorShadowTask extends PSelectorTask {
         if ( PSelectorShadowTask.openOrClosedShadowRoot !== undefined ) {
             return PSelectorShadowTask.openOrClosedShadowRoot;
         }
+        const { chrome }  = self;
         if ( typeof chrome === 'object' && chrome !== null ) {
             if ( chrome.dom instanceof Object ) {
                 if ( typeof chrome.dom.openOrClosedShadowRoot === 'function' ) {
@@ -365,7 +385,6 @@ PSelectorUpwardTask.prototype.s = '';
 class PSelectorWatchAttrs extends PSelectorTask {
     constructor(task) {
         super();
-        this.observer = null;
         this.observed = new WeakSet();
         this.observerOptions = {
             attributes: true,
@@ -376,32 +395,30 @@ class PSelectorWatchAttrs extends PSelectorTask {
             this.observerOptions.attributeFilter = task[1];
         }
     }
-    // TODO: Is it worth trying to re-apply only the current selector?
-    handler() {
-        const filterer =
-            vAPI.domFilterer && vAPI.domFilterer.proceduralFilterer;
-        if ( filterer instanceof Object ) {
-            filterer.onDOMChanged([ null ]);
-        }
-    }
     transpose(node, output) {
         output.push(node);
         if ( this.observed.has(node) ) { return; }
-        if ( this.observer === null ) {
-            this.observer = new MutationObserver(this.handler);
+        if ( PSelectorWatchAttrs.#observer === undefined ) {
+            PSelectorWatchAttrs.#observer = new MutationObserver(triggerDOMChange);
         }
-        this.observer.observe(node, this.observerOptions);
+        PSelectorWatchAttrs.#observer.observe(node, this.observerOptions);
         this.observed.add(node);
     }
+    static #observer;
 }
 
 class PSelectorXpathTask extends PSelectorTask {
     constructor(task) {
         super();
-        this.xpe = document.createExpression(task[1], null);
+        this.xpath = task[1];
+        this.xpe = null;
         this.xpr = null;
     }
     transpose(node, output) {
+        // Compile here so XPath syntax errors reach the root selector's catch.
+        if ( this.xpe === null ) {
+            this.xpe = document.createExpression(this.xpath, null);
+        }
         this.xpr = this.xpe.evaluate(
             node,
             XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
@@ -476,6 +493,7 @@ class PSelector {
     }
 }
 PSelector.prototype.operatorToTaskMap = new Map([
+    [ 'content', PSelectorContentTask ],
     [ 'has', PSelectorIfTask ],
     [ 'has-text', PSelectorHasTextTask ],
     [ 'if', PSelectorIfTask ],
@@ -512,6 +530,20 @@ class PSelectorRoot extends PSelector {
         } catch {
         }
         return [];
+    }
+    exec(input) {
+        try {
+            return super.exec(input);
+        } catch {
+        }
+        return [];
+    }
+    test(input) {
+        try {
+            return super.test(input);
+        } catch {
+        }
+        return false;
     }
 }
 PSelectorRoot.prototype.hit = false;

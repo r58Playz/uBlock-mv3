@@ -35,6 +35,10 @@
     "message": "Палітыка прыватнасці",
     "description": "Link to privacy policy on GitHub (English)"
   },
+  "aboutDocumentation": {
+    "message": "Дакументацыя",
+    "description": "Link to documentation in About pane"
+  },
   "popupFilteringModeLabel": {
     "message": "рэжым фільтравання",
     "description": "Label in the popup panel for the current filtering mode"
@@ -58,6 +62,10 @@
   "popupLessButton": {
     "message": "Менш",
     "description": "Label to be used to hide popup panel sections"
+  },
+  "popupNoWebsite": {
+    "message": "не вэб-сайт",
+    "description": "Used when popup panel is opened for a local web page"
   },
   "3pGroupDefault": {
     "message": "Прадвызначана",
@@ -99,6 +107,10 @@
     "message": "Устаўце сюды URL-адрас спіса фільтраў, які трэба дадаць",
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
+  "customListImportUserScriptsInfo": {
+    "message": "Каб прымяніць касметычныя фільтры або скрыптлеты да імпартаваных спісах, вы павінны даць uBO Lite дазвол на запуск карыстацкіх сцэнарыяў.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+  },
   "customFiltersImportExportLabel": {
     "message": "Імпартаваць/экспартаваць",
     "description": "Text label heading the import/export area of custom filters"
@@ -108,8 +120,8 @@
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
   "userScriptsInfo": {
-    "message": "Каб прымяніць касметычныя фільтры або фільтры скрыптлетаў да імпартаваных спісаў, вы павінны даць uBO Lite дазвол на запуск карыстальніцкіх скрыптоў. Адкрыйце старонку пашырэнняў вашага браўзера (<code>chrome://extensions</code> у Chrome або <code>about:addons</code> у Firefox), адкрыйце падрабязнасці <b>uBO Lite</b> і ўключыце <b>Дазволіць карыстальніцкія скрыпты</b> (таксама вядомыя як «неправераныя староннія скрыпты»).",
-    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+    "message": "Адкрыйце старонку пашырэнняў вашага браўзера (<code>chrome://extensions</code> у Chrome або <code>about:addons</code> у Firefox), адкрыйце падрабязнасці <b>uBO Lite</b> і ўключыце <b>Дазволіць карыстальніцкія скрыпты</b> (таксама вядомыя як «неправераныя староннія скрыпты»).",
+    "description": "A notice to inform user on how to enable 'user scripts' permission"
   },
   "aboutChangelog": {
     "message": "Журнал змяненняў",
@@ -283,6 +295,10 @@
     "message": "Пясочніца стварэння фільтраў",
     "description": "Header for filter-creation section in the dashboard"
   },
+  "sandboxEditorUserScriptsInfo": {
+    "message": "Каб прымяніць касметычныя фільтры або скрыптлеты з ізаляванай асяроддзя, вы павінны даць uBO Lite дазвол на запуск карыстацкіх сцэнарыяў.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+  },
   "developerModeLabel": {
     "message": "Рэжым распрацоўшчыка",
     "description": "Label for a checkbox in the options page"
@@ -364,7 +380,7 @@
     "description": "A label of a dropdown list"
   },
   "developOptionFilteringModeDetails": {
-    "message": "Падрабязныя звесткі аб рэжыме фільтрацыі",
+    "message": "Падрабязныя звесткі аб рэжыме фільтравання",
     "description": "An option in a dropdown list"
   },
   "developOptionCustomDnrRules": {
@@ -372,7 +388,7 @@
     "description": "An option in a dropdown list"
   },
   "developOptionDnrRulesOf": {
-    "message": "Правілы у DNR",
+    "message": "Правілы у DNR …",
     "description": "A section header in a dropdown list"
   },
   "developOptionDynamicRuleset": {

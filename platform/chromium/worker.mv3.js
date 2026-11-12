@@ -1,94 +1,147 @@
+// lazy offscreen document for workers
+
 let genuid = () => {
-	return [...Array(16)].reduce(a => a + Math.random().toString(36)[2], '')
+	return [...Array(16)].reduce((a) => a + Math.random().toString(36)[2], "");
 };
 
-const EPOCH = genuid();
+const OFFSCREEN_URL = chrome.runtime.getURL("/offscreen.html");
+const OFFSCREEN_GRACE = 30000;
 
-let resolveReady;
-let ready = new Promise(r => { resolveReady = r; });
-let connected = false;
+let offscreenPort = null;
+let offscreenPending = null;
+let resolveOffscreenPort = null;
+let closeTimer = null;
+let closePending = null;
 
-self.onmessage = e => {
+const workers = new Set();
+
+self.onmessage = (e) => {
 	const msg = e.data;
-	if (msg.type === "beat") {
-		e.source.postMessage({ type: "beat", epoch: EPOCH });
-	} else if (msg.type === "port") {
-		console.log("OFFSCREEN CONNECTED");
-		connected = true;
-		resolveReady(msg.port);
+	if (msg.type !== "port") {
+		return;
+	}
+	console.log("OFFSCREEN CONNECTED");
+	offscreenPort = msg.port;
+	if (resolveOffscreenPort !== null) {
+		resolveOffscreenPort(msg.port);
+		resolveOffscreenPort = null;
 	}
 };
 
-async function createOffscreen() {
-	const offscreenUrl = chrome.runtime.getURL("/offscreen.html");
+async function offscreenExists() {
 	const existing = await chrome.runtime.getContexts({
 		contextTypes: ["OFFSCREEN_DOCUMENT"],
-		documentUrls: [offscreenUrl],
+		documentUrls: [OFFSCREEN_URL],
 	});
-	if (!existing.length) {
-		chrome.offscreen.createDocument({ url: offscreenUrl, reasons: ["WORKERS"], justification: "polyfilling workers" });
-		console.log("OFFSCREEN CREATED");
-	} else {
-		console.log("OFFSCREEN ALIVE");
-	}
+	return existing.length !== 0;
 }
 
-const PING_INTERVAL = 100;
-const PING_TIMEOUT = 5000;
-
-async function pingOffscreen() {
-	const offscreenUrl = chrome.runtime.getURL("/offscreen.html");
-	for (let elapsed = 0; !connected && elapsed < PING_TIMEOUT; elapsed += PING_INTERVAL) {
-		const clients = await self.clients.matchAll({ includeUncontrolled: true });
-		for (const client of clients) {
-			if (client.url !== offscreenUrl) { continue; }
-			try { client.postMessage({ type: "beat", epoch: EPOCH }); } catch {}
+const offscreenReset = (async () => {
+	try {
+		if (await offscreenExists()) {
+			console.log("OFFSCREEN STALE");
+			await chrome.offscreen.closeDocument();
 		}
-		await new Promise(r => setTimeout(r, PING_INTERVAL));
+	} catch {}
+})();
+
+function ensureOffscreen() {
+	if (closeTimer !== null) {
+		clearTimeout(closeTimer);
+		closeTimer = null;
 	}
+	if (offscreenPort !== null) {
+		return Promise.resolve(offscreenPort);
+	}
+	if (offscreenPending !== null) {
+		return offscreenPending;
+	}
+	offscreenPending = (async () => {
+		await offscreenReset;
+		if (closePending !== null) {
+			await closePending;
+		}
+		const handshake = new Promise((r) => {
+			resolveOffscreenPort = r;
+		});
+		if ((await offscreenExists()) === false) {
+			try {
+				await chrome.offscreen.createDocument({
+					url: OFFSCREEN_URL,
+					reasons: ["WORKERS"],
+					justification: "polyfilling workers",
+				});
+				console.log("OFFSCREEN CREATED");
+			} catch {
+				// Lost a race against another createDocument(); the document
+				// that won will hand us a port.
+			}
+		}
+		const port = await handshake;
+		offscreenPending = null;
+		return port;
+	})();
+	return offscreenPending;
 }
 
-async function start() {
-	await createOffscreen();
-	await pingOffscreen();
+function releaseOffscreen() {
+	if (workers.size !== 0) {
+		return;
+	}
+	if (closeTimer !== null) {
+		return;
+	}
+	closeTimer = setTimeout(async () => {
+		closeTimer = null;
+		if (workers.size !== 0) {
+			return;
+		}
+		offscreenPort = null;
+		offscreenPending = null;
+		closePending = (async () => {
+			try {
+				await chrome.offscreen.closeDocument();
+				console.log("OFFSCREEN CLOSED");
+			} catch {}
+		})();
+		await closePending;
+		closePending = null;
+	}, OFFSCREEN_GRACE);
 }
-start();
+
+/******************************************************************************/
 
 class Worker extends EventTarget {
-	build(port, args) {
-		let { port1, port2 } = new MessageChannel();
-		port.postMessage({ type: "worker", args, port: port2, id: this.id, }, [port2]);
-
-		this.port = port1;
-		port1.onmessage = e => {
-			if (this.onmessage)
-				this.onmessage(e);
-			this.dispatchEvent(new MessageEvent("message", { data: e.data }));
-		};
-
-		for (let x of this.backlog.splice(0, this.backlog.length)) {
-			this.port.postMessage(...x);
-		}
-		port1.start();
-	}
-
 	backlog = [];
 	id = genuid();
+	port = null;
 
 	constructor(...args) {
 		super();
 
-		console.log("WORKER CONSTRUCTOR");
+		workers.add(this);
 
-		if (ready instanceof Promise) {
-			ready.then(port => {
-				ready = port;
-				console.log("WORKER CONSTRUCTOR READY");
-				this.build(port, args);
-			});
-		} else {
-			this.build(ready, args);
-		}
+		ensureOffscreen().then((host) => {
+			if (workers.has(this) === false) {
+				return;
+			}
+
+			let { port1, port2 } = new MessageChannel();
+			host.postMessage({ type: "worker", args, port: port2, id: this.id }, [
+				port2,
+			]);
+
+			this.port = port1;
+			port1.onmessage = (e) => {
+				if (this.onmessage) this.onmessage(e);
+				this.dispatchEvent(new MessageEvent("message", { data: e.data }));
+			};
+
+			for (let x of this.backlog.splice(0, this.backlog.length)) {
+				this.port.postMessage(...x);
+			}
+			port1.start();
+		});
 	}
 
 	postMessage(...args) {
@@ -100,12 +153,15 @@ class Worker extends EventTarget {
 	}
 
 	terminate() {
-		if (!this.port) throw new Error("guh");
-
-		ready.postMessage({
-			type: "workerKill",
-			id: this.id
-		})
+		if (workers.delete(this) === false) {
+			return;
+		}
+		if (offscreenPort !== null) {
+			offscreenPort.postMessage({ type: "workerKill", id: this.id });
+		}
+		this.port = null;
+		this.backlog.length = 0;
+		releaseOffscreen();
 	}
 }
 globalThis.Worker = Worker;

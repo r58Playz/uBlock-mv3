@@ -20,6 +20,7 @@
 */
 
 import {
+    addImportedLists,
     getEnabledImportedLists,
     getImportedLists,
     updateEnabledImportedLists,
@@ -178,6 +179,25 @@ async function updateRegexRules(currentRules, addRules, removeRuleIds) {
 
 /******************************************************************************/
 
+// https://github.com/uBlockOrigin/uBOL-home/issues/715
+
+function toSafeDynamicRules(addRules) {
+    if ( Array.isArray(addRules) === false ) { return; }
+    if ( dnr.RuleConditionKeys?.TOP_DOMAINS ) { return addRules; }
+    const safeRules = [];
+    for ( const rule of addRules ) {
+        const { condition } = rule;
+        if ( condition.topDomains ) { continue; }
+        if ( condition.excludedTopDomains ) {
+            delete condition.excludedTopDomains;
+        }
+        safeRules.push(rule);
+    }
+    return safeRules;
+}
+
+/******************************************************************************/
+
 export async function updateDynamicAndSessionRules() {
     const currentRules = await dnr.getDynamicRules();
 
@@ -212,7 +232,10 @@ export async function updateDynamicAndSessionRules() {
     const response = {};
 
     try {
-        await dnr.updateDynamicRules({ addRules, removeRuleIds });
+        await dnr.updateDynamicRules({
+            addRules: toSafeDynamicRules(addRules),
+            removeRuleIds,
+        });
         if ( removeRuleIds.length !== 0 ) {
             ubolLog(`Remove ${removeRuleIds.length} dynamic DNR rules`);
         }
@@ -476,19 +499,39 @@ export async function patchDefaultRulesets() {
     ]);
     const toAdd = [];
     const toRemove = [];
+    // New default rulesets to add
     for ( const id of newDefaultIds ) {
         if ( oldDefaultIds.includes(id) ) { continue; }
         toAdd.push(id);
     }
+    // Old default rulesets to remove
     for ( const id of oldDefaultIds ) {
         if ( newDefaultIds.includes(id) ) { continue; }
         toRemove.push(id);
     }
+    // Non-default rulesets removed from stock lists
+    const removedStockLists = new Map([
+        [ 'dpollock-0', {
+            name: 'Dan Pollock’s hosts file',
+            url: 'https://someonewhocares.org/hosts/hosts',
+            homeURL: 'https://someonewhocares.org/hosts/',
+        }],
+    ]);
     const reImported = /^[a-z]+:\/\//;
+    const importedToAdd = [];
     for ( const id of rulesetConfig.enabledRulesets ) {
         if ( reImported.test(id) ) { continue; }
         if ( staticRulesetIds.includes(id) ) { continue; }
+        if ( toRemove.includes(id) ) { continue; }
+        if ( toAdd.includes(id) ) { continue; }
         toRemove.push(id);
+        if ( removedStockLists.has(id) ) {
+            importedToAdd.push(removedStockLists.get(id));
+        }
+    }
+    if ( importedToAdd.length ) {
+        await addImportedLists(importedToAdd);
+        toAdd.push(...importedToAdd.map(a => a.url));
     }
     localWrite('defaultRulesetIds', newDefaultIds);
     if ( toAdd.length === 0 && toRemove.length === 0 ) { return; }
@@ -624,11 +667,11 @@ async function enableRulesets(ids) {
         ubolLog(`Disable ruleset: ${disableRulesetIds}`);
     }
 
-    response.stockUpdated ||= await updateEnabledRulesets(
+    response.stockUpdated = await updateEnabledRulesets(
         enableRulesetIds,
         disableRulesetIds,
         response,
-    );
+    ) || response.stockUpdated;
     if ( response.stockUpdated ) {
         const result = await updateDynamicAndSessionRules();
         if ( result?.error ) {
@@ -755,7 +798,7 @@ async function updateUserRules() {
     // adding rules.
     try {
         await dnr.updateDynamicRules({ removeRuleIds });
-        await dnr.updateDynamicRules({ addRules });
+        await dnr.updateDynamicRules({ addRules: toSafeDynamicRules(addRules) });
         if ( removeRuleIds.length !== 0 ) {
             ubolLog(`updateUserRules() / Removed ${removeRuleIds.length} dynamic DNR rules`);
         }

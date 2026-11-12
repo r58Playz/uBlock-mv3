@@ -19,6 +19,14 @@
 			border-radius: 0.25em;
 		}
 
+		a {
+			color: #6097f0;
+		}
+
+		a:hover {
+			color: color-mix(in srgb, #6097f0, #000000 50%)
+		}
+
 		@media (prefers-color-scheme: dark) {
 			:root {
 				background: #111;
@@ -27,6 +35,14 @@
 
 			code {
 				background: #222;
+			}
+
+			a {
+				color: #7c98f6;
+			}
+
+			a:hover {
+				color: color-mix(in srgb, #7c98f6, #ffffff 50%)
 			}
 		}
 	</style>
@@ -37,36 +53,103 @@
 		<h1>uBlock Origin MV3</h1>
 		<p>
 			An unofficial port of uBlock Origin to Manifest V3, enabling <code>webRequestBlocking</code> with policy installation or <code>--allowlisted-extension-id</code>.
-			This website currently hosts version <code>__CRX3_VERSION__</code> of uBlock Origin. You can view the <a href="/update.xml">update.xml</a> for the direct download link. 
+			This website currently hosts version <code>__CRX3_VERSION__</code> of uBlock Origin. You can download the CRX from <a href="/uBlock0___CRX3_VERSION__.crx"><code>/uBlock0___CRX3_VERSION__.crx</code></a>.
+		</p>
+
+		<h2>Installation</h2>
+		<p>
+			Chrome 138 or newer is required. To install, add <code>"__CRX3_ID__;https://__PAGES_URL__/update.xml"</code> to Chrome's <code>ExtensionInstallForcelist</code> policy, or
+			install manually and use the <code>--allowlisted-extension-id=__CRX3_ID__</code> flag.
+			This varies across operating systems and is heavily restricted on Windows and macOS.
+			The flag must be present on every launch. Unlike a policy install, the flag-based install does not allow blocking handlers to return promises while uBO starts.
+		</p>
+
+		<h3>Linux</h3>
+		<ol>
+			<li>Create <code>/etc/opt/chrome/policies/managed/policy.json</code>, or <code>/etc/chromium/policies/managed/policy.json</code> depending on your install.</li>
+			<li>Write <code>{ "ExtensionInstallForcelist": ["__CRX3_ID__;https://__PAGES_URL__/update.xml"] }</code> into the file.</li>
+			<li>Restart the browser, then enable <code>Allow User Scripts</code> in the extension's details page.</li>
+		</ol>
+
+		<h3>Windows and macOS</h3>
+		<p>
+			Chrome refuses to force-install an extension from a non-Web-Store update URL unless the device has a management authority it considers trustworthy.
+			Merely writing the policy locally via platform policy locations like regedit or plists does <b>not</b> establish that trust.
+			Chrome shows the effective entry as <code>[BLOCKED]...</code> in <code>chrome://policy</code>.
+		</p>
+
+		<h4>Option 1: give the device a trusted management authority</h4>
+		<p>
+			This is the only way to get a full policy install, including promise-returning <code>webRequestBlocking</code> handlers.
+		</p>
+		<ul>
+			<li>
+				Windows Pro or higher: join the device to Microsoft Entra ID, join an Active Directory domain, or enroll the device in an MDM.
+			</li>
+			<li>
+				macOS: enroll the Mac in an MDM, or bind it to a directory server, meaning an Open Directory node under <code>/LDAPv3</code> or <code>/Active Directory</code>.
+			</li>
+			<li>Either platform: enroll the browser in Chrome Enterprise Core and set the forcelist entry in the Google Admin console. No local registry or plist entry is needed in this case.</li>
+		</ul>
+		<p>
+			If the device is managed through a domain or MDM, deploy the policy through that management system.
+			A locally applied machine policy can also be used after Chrome recognises the device as managed:
+		</p>
+		<ul>
+			<li>Windows: in regedit, create the key <code>HKEY_LOCAL_MACHINE\Software\Policies\Google\Chrome\ExtensionInstallForcelist</code>, add a string value named <code>1</code> (or the next free number), and set it to <code>__CRX3_ID__;https://__PAGES_URL__/update.xml</code>.</li>
+			<li>macOS: add <code>ExtensionInstallForcelist</code>, as an array containing <code>__CRX3_ID__;https://__PAGES_URL__/update.xml</code>, to <code>/Library/Managed Preferences/com.google.Chrome.plist</code>.</li>
+		</ul>
+		<p>
+			Then restart the browser and enable <code>Allow User Scripts</code> in the extension's details page.
+			If <code>chrome://policy</code> still shows the value with a <code>[BLOCKED]</code> prefix, the device is not being recognised as managed.
+		</p>
+
+		<h4>Option 2: manual install plus a launch flag</h4>
+		<p>
+			This works on any unmanaged Windows or macOS machine, but the extension ends up installed as an ordinary extension rather than by policy.
+			<b>Promise-returning <code>webRequestBlocking</code> handlers are therefore unavailable.</b>
+			While uBO starts, subresource requests are temporarily cancelled and affected tabs may be reloaded instead of requests being held until the filtering engine is ready.
 		</p>
 		<p>
-			You can use prebuilt versions of this port by adding <code>"__CRX3_ID__;https://__PAGES_URL__/update.xml"</code> to your <code>ExtensionInstallForcelist</code> policy.
-			<b>On Windows and macOS, Chrome aggressively blocks sideloaded extensions attempting to get webRequestBlocking permission:</b> sideloaded self-signed CRXs are disabled, and ExtensionInstallForcelist extensions with custom update URLs are blocked without proper enterprise management. The only way to install reliably on Windows or macOS is to locally build and load unpacked.
-			<ul>
-				<li>
-					Linux:
-					<ol>
-						<li>Create <code>/etc/opt/chrome/policies/managed/policy.json</code> or <code>/etc/chromium/policies/managed/policy.json</code>.</li>
-						<li>Write <code>{ "ExtensionInstallForcelist": ["__CRX3_ID__;https://__PAGES_URL__/update.xml"] }</code> into the file.</li>
-					</ol>
-				</li>
-				<li>
-					Windows:
-					<ol>
-						<li>Fake enterprise management for your device.</li>
-						<li>Open regedit, create the key <code>Software\Policies\Google\Chrome\ExtensionInstallForcelist</code>.</li>
-						<li>Add a string value named <code>1</code> (if it already exists choose the next available number).</li>
-						<li>Set it to <code>__CRX3_ID__;https://__PAGES_URL__/update.xml</code></li>
-					</ol>
-				</li>
-				<li>
-					macOS: no clue
-				</li>
-			</ul>
-			Make sure to enable <code>Allow User Scripts</code> in the extension details after it gets force-installed.
+			On branded Google Chrome, the packaged CRX must also be added to the machine-level <code>ExtensionInstallAllowlist</code> policy so Chrome does not disable it after installation.
+			This is not needed for unbranded Chromium. The allowlist does not install the extension or replace the launch flag.
 		</p>
+		<ol>
+			<li>Download <a href="/uBlock0___CRX3_VERSION__.crx">the CRX</a>.</li>
+			<li>Remove any <code>ExtensionInstallForcelist</code> entry for this extension.</li>
+			<li>
+				Add <code>__CRX3_ID__</code> to the machine-level <code>ExtensionInstallAllowlist</code> policy:
+				<ul>
+					<li>Windows: in regedit, create <code>HKEY_LOCAL_MACHINE\Software\Policies\Google\Chrome\ExtensionInstallAllowlist</code>, add a string value named <code>1</code> (or the next free number), and set it to the extension ID.</li>
+					<li>macOS: add <code>ExtensionInstallAllowlist</code>, as an array containing only the extension ID, to <code>/Library/Managed Preferences/com.google.Chrome.plist</code>.</li>
+				</ul>
+			</li>
+			<li>Completely quit Chrome, including background processes, restart it, and verify the allowlist in <code>chrome://policy</code>.</li>
+			<li>Launch Chrome with <code>--allowlisted-extension-id=__CRX3_ID__</code>. Chrome will show an unsupported command-line flag warning; do not suppress it with <code>--test-type</code>, which changes other browser behaviour.</li>
+			<li>Open <code>chrome://extensions</code>, enable <code>Developer mode</code>, then drag the CRX onto the page and approve the installation.</li>
+			<li>Enable <code>Allow User Scripts</code> in the extension's details page. Wait for the <code>!</code> badge to clear; reload the extension if it does not.</li>
+		</ol>
 		<p>
-			Check out the <a href="https://github.com/r58playz/uBlock-mv3">GitHub</a> if you want to install it by sideloading and using <code>--allowlisted-extension-id</code>.
+			The flag is what makes Chromium grant the MV3 <code>webRequestBlocking</code> permission to this extension. Chrome must be started with it every time.
+		</p>
+
+		<h2>How it works</h2>
+		<ul>
+			<li>This port does not convert uBO's filtering engine to <code>declarativeNetRequest</code>. The existing engine runs in an MV3 service worker and returns blocking decisions through <code>webRequest</code>.</li>
+			<li>
+				Chromium normally grants <code>webRequestBlocking</code> to MV3 extensions only when they are installed by policy. The <code>--allowlisted-extension-id</code> flag bypasses that permission check, but does not turn a manual install into a policy install.
+				<ul>
+					<li>Only a real policy install may return promises from blocking handlers. This port uses them to hold requests while the filtering engine starts.</li>
+					<li>A manual install instead temporarily cancels subresource requests during startup and reloads affected tabs after the engine is ready, like Chrome on MV2. Normal filtering decisions are synchronous after startup.</li>
+				</ul>
+			</li>
+			<li>Legacy script and CSS injection APIs are implemented with <code>chrome.scripting</code> and <code>chrome.userScripts</code>.</li>
+			<li>Small DOM and <code>XMLHttpRequest</code> shims provide the background-page APIs uBO uses, and a periodic extension API call keeps the service worker active.</li>
+			<li>Web Workers run in a lazily created offscreen document and communicate with the service worker through message ports.</li>
+		</ul>
+
+		<p>
+			Check out the <a href="https://github.com/r58playz/uBlock-mv3">GitHub</a> for the source and for build instructions.
 		</p>
 	</main>
 </body>

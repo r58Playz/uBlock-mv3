@@ -41,6 +41,15 @@ const BLOCK_RESOURCE_BIT         = 0b00010;
 const TEMP_ALLOW_LARGE_MEDIA_BIT = 0b00100;
 const SUBSCRIBE_TO_LIST_BIT      = 0b01000;
 const VIEW_SOURCE_BIT            = 0b10000;
+const OPEN_POPUP_PANEL_BIT       = 0b100000;
+
+// [PATCH uBlock-mv3]
+// Chromium on Android phones has no toolbar, hence no way to open the popup
+// panel. Chromium only drops the `Mobile` token from its user agent when it
+// uses the tablet/desktop layout, which does have a toolbar.
+const isChromiumMobile = ( ) =>
+    vAPI.webextFlavor.soup.has('chromium') &&
+    vAPI.webextFlavor.soup.has('mobile');
 
 /******************************************************************************/
 
@@ -133,6 +142,16 @@ const onViewSource = function(details, tab) {
 
 /******************************************************************************/
 
+const onOpenPopupPanel = function(details, tab) {
+    if ( tab === undefined ) { return; }
+    µb.openNewTab({
+        url: `popup-fenix.html?tabId=${tab.id}&intab=1`,
+        select: true,
+    });
+};
+
+/******************************************************************************/
+
 const onEntryClicked = function(details, tab) {
     if ( details.menuItemId === 'uBlock0-blockElement' ) {
         return onBlockElement(details, tab);
@@ -151,6 +170,9 @@ const onEntryClicked = function(details, tab) {
     }
     if ( details.menuItemId === 'uBlock0-viewSource' ) {
         return onViewSource(details, tab);
+    }
+    if ( details.menuItemId === 'uBlock0-openPopupPanel' ) {
+        return onOpenPopupPanel(details, tab);
     }
 };
 
@@ -193,6 +215,18 @@ const menuEntries = {
         contexts: [ 'page', 'frame', 'link' ],
         documentUrlPatterns: [ 'http://*/*', 'https://*/*' ],
     },
+    openPopupPanel: {
+        id: 'uBlock0-openPopupPanel',
+        title: i18n$('contextMenuOpenPopupPanel'),
+        contexts: [ 'all' ],
+        documentUrlPatterns: [ 'http://*/*', 'https://*/*' ],
+    },
+    mobileRoot: {
+        id: 'uBlock0-mobileRoot',
+        title: vAPI.app.name,
+        contexts: [ 'all' ],
+        documentUrlPatterns: [ 'http://*/*', 'https://*/*' ],
+    },
 };
 
 /******************************************************************************/
@@ -203,7 +237,7 @@ const update = function(tabId = undefined) {
     let newBits = 0;
     if ( µb.userSettings.contextMenuEnabled ) {
         const pageStore = tabId && µb.pageStoreFromTabId(tabId) || null;
-        if ( pageStore?.getNetFilteringSwitch() ) {
+        if ( pageStore?.isNotTrusted() ) {
             if ( µb.userFiltersAreEnabled() ) {
                 if ( pageStore.shouldApplySpecificCosmeticFilters(0) ) {
                     newBits |= BLOCK_ELEMENT_BIT;
@@ -217,6 +251,9 @@ const update = function(tabId = undefined) {
         }
         if ( µb.hiddenSettings.filterAuthorMode ) {
             newBits |= VIEW_SOURCE_BIT;
+        }
+        if ( isChromiumMobile() ) {
+            newBits |= OPEN_POPUP_PANEL_BIT;
         }
     }
     newBits |= SUBSCRIBE_TO_LIST_BIT;
@@ -238,6 +275,22 @@ const update = function(tabId = undefined) {
     }
     if ( (newBits & VIEW_SOURCE_BIT) !== 0 ) {
         usedEntries.push(menuEntries.viewSource);
+    }
+    if ( (newBits & OPEN_POPUP_PANEL_BIT) !== 0 ) {
+        usedEntries.push(menuEntries.openPopupPanel);
+        // [PATCH uBlock-mv3]
+        // Chromium's Android context menu drops clicks on top-level extension
+        // items (ContextMenuMediator replaces their click listener), while
+        // items inside an extension's submenu still work. Nest all entries
+        // under one parent so they always end up in a submenu. The panel
+        // entry matches every http(s) page, so the parent is never empty.
+        for ( let i = 0; i < usedEntries.length; i++ ) {
+            usedEntries[i] = {
+                ...usedEntries[i],
+                parentId: menuEntries.mobileRoot.id,
+            };
+        }
+        usedEntries.unshift(menuEntries.mobileRoot);
     }
     vAPI.contextMenu.setEntries(usedEntries, onEntryClicked);
 };

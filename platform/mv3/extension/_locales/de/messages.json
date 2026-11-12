@@ -28,12 +28,16 @@
     "description": "appears as tab name in dashboard. Inspired from 'Develop' menu in Safari, see https://developer.apple.com/documentation/safari-developer-tools/develop-menu"
   },
   "aboutPageName": {
-    "message": "Über",
+    "message": "Informationen",
     "description": "appears as tab name in dashboard"
   },
   "aboutPrivacyPolicy": {
     "message": "Datenschutzhinweise",
     "description": "Link to privacy policy on GitHub (English)"
+  },
+  "aboutDocumentation": {
+    "message": "Dokumentation",
+    "description": "Link to documentation in About pane"
   },
   "popupFilteringModeLabel": {
     "message": "Filtermodus",
@@ -58,6 +62,10 @@
   "popupLessButton": {
     "message": "Weniger",
     "description": "Label to be used to hide popup panel sections"
+  },
+  "popupNoWebsite": {
+    "message": "Keine Website",
+    "description": "Used when popup panel is opened for a local web page"
   },
   "3pGroupDefault": {
     "message": "Standard",
@@ -92,24 +100,28 @@
     "description": "Header for a ruleset section in 'Filter lists pane'"
   },
   "customListImportLabel": {
-    "message": "Filterliste hinzufügen …",
+    "message": "Filterliste hinzufügen …",
     "description": "Text label heading the import area of custom filter lists"
   },
   "customListImportPlaceholder": {
-    "message": "URL der neuen Filterliste zum Hinzufügen einfügen",
+    "message": "URL der Filterliste hier einfügen",
     "description": "Placeholder text which describes the purpose of the textarea widget"
+  },
+  "customListImportUserScriptsInfo": {
+    "message": "Um kosmetische Filter oder Scriptlet-Filter aus importierten Listen anzuwenden, benötigt uBO Lite die Berechtigung zum Ausführen von Nutzerscripts.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
   },
   "customFiltersImportExportLabel": {
     "message": "Importieren und exportieren",
     "description": "Text label heading the import/export area of custom filters"
   },
   "customFiltersImportTextareaPlaceholder": {
-    "message": "Kosmetische Filter oder Scriptlets zum Hinzufügen einfügen",
+    "message": "Kosmetische Filter hier einfügen",
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
   "userScriptsInfo": {
-    "message": "uBO Lite benötigt die Berechtigung zum Ausführen von Nutzerscripts, um kosmetische Filter oder Scriptlet-Filter aus importierten Listen anzuwenden. Die Option befindet sich in den Browser-Einstellungen für Erweiterungen (<code>chrome://extensions</code> in Chrome oder <code>about:addons</code> in Firefox). Anschließend die Details von <b>uBO Lite</b> öffnen und <b>Nutzerscripts zulassen</b> aktivieren (in Firefox „Nicht verifizierten Skripten von Drittanbietern den Zugriff auf Ihre Daten erlauben“).",
-    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+    "message": "Die Option befindet sich in den Browser-Einstellungen für Erweiterungen (<code>chrome://extensions</code> in Chrome oder <code>about:addons</code> in Firefox). Anschließend die Details von <b>uBO Lite</b> öffnen und <b>Nutzerscripts zulassen</b> aktivieren (in Firefox „Nicht verifizierten Skripten von Drittanbietern den Zugriff auf Ihre Daten erlauben“).",
+    "description": "A notice to inform user on how to enable 'user scripts' permission"
   },
   "aboutChangelog": {
     "message": "Änderungsprotokoll",
@@ -282,6 +294,10 @@
   "sandboxEditorLabel": {
     "message": "Testumgebung zum Erstellen von Filtern",
     "description": "Header for filter-creation section in the dashboard"
+  },
+  "sandboxEditorUserScriptsInfo": {
+    "message": "Um kosmetische Filter oder Scriptlet-Filter aus der Sandbox anzuwenden, benötigt uBO Lite die Berechtigung zum Ausführen von Nutzerscripts.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
   },
   "developerModeLabel": {
     "message": "Entwicklermodus",

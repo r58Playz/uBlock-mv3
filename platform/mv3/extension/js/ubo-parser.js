@@ -116,27 +116,111 @@ function ownerFromPropertyPath(root, path) {
 
 /******************************************************************************/
 
-function mergeArrays(rules, propertyPath) {
+function propertySorter(k, v) {
+    if ( k.startsWith('_') ) { return; }
+    if ( Array.isArray(v) ) {
+        return typeof v[0] === 'string' ? v.sort() : v;
+    }
+    if ( v instanceof Object ) {
+        const sorted = {};
+        for ( const kk of Object.keys(v).sort() ) {
+            sorted[kk] = v[kk];
+        }
+        return sorted;
+    }
+    return v;
+}
+
+/******************************************************************************/
+
+function mergeDomains(rules, includeProp, excludeProp) {
+    const out = [];
+    const distinctRules = new Map();
+    for ( const rule of rules ) {
+        const { id } = rule;
+        if ( rule.condition === undefined ) {
+            out.push(rule);
+            continue;
+        }
+        const includes = rule.condition[includeProp];
+        rule.condition[includeProp] = undefined;
+        const excludes = rule.condition[excludeProp];
+        rule.condition[excludeProp] = undefined;
+        rule.id = undefined;
+        const hash = JSON.stringify(rule, propertySorter);
+        const details = distinctRules.get(hash) || { id };
+        if ( details.initialized !== true ) {
+            details.initialized = true;
+            distinctRules.set(hash, details);
+        }
+        if ( Boolean(includes?.length) === false ) {
+            details.includes = [];
+        } else if ( details.includes === undefined ) {
+            details.includes = includes;
+        } else if ( details.includes.length ) {
+            for ( const hn of includes ) {
+                details.includes.push(hn);
+            }
+        }
+        if ( excludes?.length ) {
+            if ( details.excludes === undefined ) {
+                details.excludes = excludes;
+            } else {
+                for ( const hn of excludes ) {
+                    details.excludes.push(hn);
+                }
+            }
+        }
+    }
+    for ( const [ hash, details ] of distinctRules ) {
+        const rule = JSON.parse(hash);
+        rule.id = details.id;
+        if ( details.includes?.length ) {
+            rule.condition[includeProp] = Array.from(new Set(details.includes)).sort();
+        }
+        if ( details.excludes?.length ) {
+            rule.condition[excludeProp] = Array.from(new Set(details.excludes)).sort();
+        }
+        out.push(rule);
+    }
+    return out;
+}
+
+/******************************************************************************/
+
+function mergeArrays(rules, propertyPath, emptyIsAll = false) {
     const out = [];
     const distinctRules = new Map();
     for ( const rule of rules ) {
         const { id } = rule;
         const { owner, prop } = ownerFromPropertyPath(rule, propertyPath);
-        if ( owner === undefined || Array.isArray(owner[prop]) === false ) {
+        if ( owner === undefined ) {
             out.push(rule);
             continue;
         }
-        const collection = owner[prop] || [];
+        const collection = owner[prop];
+        if ( Array.isArray(collection) === false || collection.length === 0 ) {
+            if ( emptyIsAll === false ) {
+                out.push(rule);
+                continue;
+            }
+        }
         owner[prop] = undefined;
         rule.id = undefined;
-        const hash = JSON.stringify(rule);
-        const details = distinctRules.get(hash) ||
-            { id, collection: new Set() };
-        if ( details.collection.size === 0 ) {
+        const hash = JSON.stringify(rule, propertySorter);
+        const details = distinctRules.get(hash) || { id };
+        if ( details.initialized !== true ) {
+            details.initialized = true;
             distinctRules.set(hash, details);
         }
-        for ( const hn of collection ) {
-            details.collection.add(hn);
+        if ( Boolean(collection?.length) === false ) {
+            details.collection = [];
+        } else if ( details.collection === undefined ) {
+            details.collection = collection;
+        } else if ( details.collection.length ) {
+            for ( const v of collection ) {
+                details.collection.push(v);
+            }
         }
     }
     for ( const [ hash, { id, collection } ] of distinctRules ) {
@@ -144,9 +228,9 @@ function mergeArrays(rules, propertyPath) {
         if ( id ) {
             rule.id = id;
         }
-        if ( collection.size !== 0 ) {
+        if ( collection?.length ) {
             const { owner, prop } = ownerFromPropertyPath(rule, propertyPath);
-            owner[prop] = Array.from(collection).sort();
+            owner[prop] = Array.from(new Set(collection)).sort();
         }
         out.push(rule);
     }
@@ -156,17 +240,29 @@ function mergeArrays(rules, propertyPath) {
 /******************************************************************************/
 
 export function minimizeRuleset(rules) {
-    rules = mergeArrays(rules, 'condition.requestDomains');
-    rules = mergeArrays(rules, 'condition.excludedRequestDomains');
-    rules = mergeArrays(rules, 'condition.initiatorDomains');
-    rules = mergeArrays(rules, 'condition.excludedInitiatorDomains');
-    rules = mergeArrays(rules, 'condition.topDomains');
-    rules = mergeArrays(rules, 'condition.excludedTopDomains');
-    rules = mergeArrays(rules, 'condition.resourceTypes');
-    rules = mergeArrays(rules, 'condition.excludedRequestMethods');
-    rules = mergeArrays(rules, 'condition.requestMethods');
-    rules = mergeArrays(rules, 'condition.excludedResourceTypes');
+    rules.forEach(rule => {
+        const { condition } = rule;
+        if ( condition.excludedResourceTypes ) { return; }
+        if ( condition.resourceTypes ) { return; }
+        if ( condition.urlFilter ) { return; }
+        if ( condition.regexFilter ) { return; }
+        condition.excludedResourceTypes = [ 'main_frame' ];
+    });
+    rules = mergeArrays(rules, 'action.responseHeaders');
     rules = mergeArrays(rules, 'action.redirect.transform.queryTransform.removeParams');
+    rules = mergeArrays(rules, 'condition.responseHeaders');
+    rules = mergeArrays(rules, 'condition.resourceTypes', true);
+    rules = mergeArrays(rules, 'condition.requestMethods', true);
+    rules = mergeDomains(rules, 'initiatorDomains', 'excludedInitiatorDomains');
+    rules = mergeDomains(rules, 'requestDomains', 'excludedRequestDomains');
+    rules = mergeDomains(rules, 'topDomains', 'excludedTopDomains');
+    rules.forEach(rule => {
+        const { condition } = rule;
+        if ( condition.resourceTypes ) { return; }
+        if ( condition.excludedResourceTypes?.length !== 1 ) { return; }
+        if ( condition.excludedResourceTypes[0] !== 'main_frame' ) { return; }
+        delete condition.excludedResourceTypes;
+    });
     return rules;
 }
 
@@ -213,6 +309,45 @@ function dropEntities(rule, prop) {
 
 /******************************************************************************/
 
+function convertInitiatorDomainsToRequestDomains(rule) {
+    if ( rule.condition.initiatorDomains ) {
+        rule.condition.requestDomains ??= [];
+        rule.condition.requestDomains = [
+            ...rule.condition.requestDomains,
+            ...rule.condition.initiatorDomains,
+        ];
+        delete rule.condition.initiatorDomains;
+    }
+    if ( rule.condition.excludedInitiatorDomains ) {
+        rule.condition.excludedRequestDomains ??= [];
+        rule.condition.excludedRequestDomains = [
+            ...rule.condition.excludedRequestDomains,
+            ...rule.condition.excludedInitiatorDomains,
+        ];
+        delete rule.condition.excludedInitiatorDomains;
+    }
+}
+
+/******************************************************************************/
+
+// https://github.com/uBlockOrigin/uBOL-home/discussions/736
+
+export function expandRemoveparamsRule(rule0, out) {
+    if ( Boolean(rule0.condition.resourceTypes?.includes('main_frame')) === false ) { return; }
+    if ( rule0.condition.initiatorDomains === undefined ) { return; }
+    if ( rule0.condition.resourceTypes.length === 1 ) {
+        convertInitiatorDomainsToRequestDomains(rule0);
+        return;
+    }
+    const rule1 = structuredClone(rule0);
+    rule0.condition.resourceTypes = rule0.condition.resourceTypes.filter(a => a !== 'main_frame');
+    rule1.condition.resourceTypes = [ 'main_frame' ];
+    convertInitiatorDomainsToRequestDomains(rule1);
+    out.push(rule1);
+}
+
+/******************************************************************************/
+
 export function validateRules(rules) {
     const out = [];
     for ( const rule of rules ) {
@@ -250,7 +385,7 @@ export function validateRules(rules) {
 //   Block important: 40
 //   Redirect important: 41-49
 
-export function parseNetworkFilter(parser, details = {}) {
+export function parseNetworkFilter(parser, details = {}, out = []) {
     if ( parser.isNetworkFilter() === false ) { return; }
     if ( parser.hasError() ) { return; }
 
@@ -621,7 +756,11 @@ export function parseNetworkFilter(parser, details = {}) {
     if ( priority !== 1 ) {
         rule.priority = priority;
     }
-    return rule;
+    out.push(rule);
+    if ( rule.action.redirect?.transform?.queryTransform?.removeParams ) {
+        expandRemoveparamsRule(rule, out);
+    }
+    return out;
 }
 
 /******************************************************************************/
@@ -636,9 +775,7 @@ export function parseFilters(text, details) {
     for ( const line of lines ) {
         parser.parse(line);
         if ( parser.isNetworkFilter() === false ) { continue; }
-        const rule = parseNetworkFilter(parser, details);
-        if ( rule === undefined ) { continue; }
-        rules.push(rule);
+        parseNetworkFilter(parser, details, rules);
     }
     rules = minimizeRuleset(rules);
     rules = minimizeRules(rules);

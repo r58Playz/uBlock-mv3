@@ -77,6 +77,9 @@ export default new Map([
     [ 'fingerprint3.js', {
         data: 'text',
     } ],
+    [ 'freestar_pubfig.js', {
+        data: 'text',
+    } ],
     [ 'google-analytics_analytics.js', {
         alias: [
             'google-analytics.com/analytics.js',
@@ -99,6 +102,11 @@ export default new Map([
         alias: 'google-ima3',                       /* adguard compatibility */
         data: 'text',
     } ],
+    [ 'google-ima-dai.js', {
+        alias: 'google-ima3-dai',                   /* adguard compatibility */
+        data: 'text',
+        requiresTrust: true,
+    } ],
     [ 'googlesyndication_adsbygoogle.js', {
         alias: [
             'googlesyndication.com/adsbygoogle.js',
@@ -116,10 +124,6 @@ export default new Map([
     [ 'hd-main.js', {
     } ],
     [ 'nitropay_ads.js', {
-        data: 'text',
-    } ],
-    [ 'nobab.js', {
-        alias: [ 'bab-defuser.js', 'prevent-bab.js' ],
         data: 'text',
     } ],
     [ 'nobab2.js', {
@@ -182,6 +186,8 @@ export default new Map([
     } ],
     [ 'outbrain-widget.js', {
         alias: 'widgets.outbrain.com/outbrain.js',
+    } ],
+    [ 'piano-analytics.js', {
     } ],
     [ 'popads.js', {
         alias: [ 'popads.net.js', 'prevent-popads-net.js' ],

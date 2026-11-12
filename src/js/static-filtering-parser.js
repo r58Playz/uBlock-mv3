@@ -100,6 +100,7 @@ export const AST_ERROR_OPTION_BADVALUE                = 1 << iota++;
 export const AST_ERROR_OPTION_EXCLUDED                = 1 << iota++;
 export const AST_ERROR_IF_TOKEN_UNKNOWN               = 1 << iota++;
 export const AST_ERROR_UNTRUSTED_SOURCE               = 1 << iota++;
+export const AST_ERROR_CAPABILITY                     = 1 << iota++;
 
 iota = 0;
 const NODE_RIGHT_INDEX                                = iota++;
@@ -604,6 +605,7 @@ export const preparserIfTokens = new Set([
     'ext_ublock',
     'ext_ubol',
     'ext_devbuild',
+    'env_brave',
     'env_chromium',
     'env_edge',
     'env_firefox',
@@ -1455,12 +1457,29 @@ export class AstFilterParser {
         case NODE_TYPE_NET_OPTION_NAME_REDIRECT:
         case NODE_TYPE_NET_OPTION_NAME_REDIRECTRULE: {
             realBad = abstractTypeCount || behaviorTypeCount || unredirectableTypeCount;
+            if ( realBad ) { break; }
+            if ( isException || isBadfilter ) { break; }
+            const { trustedSource, trustedTokens } = this.options;
+            if ( trustedSource ) { break; }
+            if ( trustedTokens instanceof Set === false ) { break; }
+            const value = this.getNetOptionValue(modifierType);
+            let { token } = parseRedirectValue(value);
+            if ( trustedTokens.has(token) ) {
+                this.astError = AST_ERROR_UNTRUSTED_SOURCE;
+                realBad = true;
+            }
             break;
         }
         case NODE_TYPE_NET_OPTION_NAME_REPLACE: {
             realBad = abstractTypeCount || behaviorTypeCount || unredirectableTypeCount;
             if ( realBad ) { break; }
             if ( isException || isBadfilter ) { break; }
+            if ( this.options.canFilterResponseBody !== true ) {
+                this.addFlags(AST_FLAG_HAS_ERROR);
+                this.astError = AST_ERROR_CAPABILITY;
+                realBad = true;
+                break;
+            }
             if ( this.options.trustedSource !== true ) {
                 this.astError = AST_ERROR_UNTRUSTED_SOURCE;
                 realBad = true;
@@ -2188,7 +2207,11 @@ export class AstFilterParser {
         if ( c0 === 0x2F /* / */ ) {
             this.domainRegexValueParser.nextArg(this.raw, beg+1);
             end = this.domainRegexValueParser.separatorEnd;
-            isRegex = true;
+            if ( end <= parentEnd ) {
+                isRegex = true;
+            } else {
+                end = -1;
+            }
         } else if ( c0 === 0x5B /* [ */ && this.startsWith('[$domain=/', beg) ) {
             end = this.indexOf('/]', beg + 10, parentEnd);
             if ( end !== -1 ) { end += 2; }
@@ -2341,12 +2364,12 @@ export class AstFilterParser {
                 break;
             }
             case NODE_TYPE_EXT_PATTERN_SCRIPTLET_TOKEN: {
-                if ( this.interactive !== true ) { break; }
                 if ( isException ) { break; }
-                const { trustedSource, trustedScriptletTokens } = this.options;
-                if ( trustedScriptletTokens instanceof Set === false ) { break; }
+                const { trustedSource, trustedTokens } = this.options;
+                if ( trustedSource ) { break; }
+                if ( trustedTokens instanceof Set === false ) { break; }
                 const token = this.getNodeString(targetNode);
-                if ( trustedScriptletTokens.has(token) && trustedSource !== true ) {
+                if ( trustedTokens.has(token) ) {
                     this.astError = AST_ERROR_UNTRUSTED_SOURCE;
                     realBad = true;
                 }
@@ -2389,6 +2412,10 @@ export class AstFilterParser {
                 return this.parseExtPatternResponseheader(parent);
             }
             this.astTypeFlavor = AST_TYPE_EXTENDED_HTML;
+            if ( this.options.canFilterResponseBody !== true ) {
+                this.astError = AST_ERROR_CAPABILITY;
+                return 0;
+            }
             return this.parseExtPatternHtml(parent);
         }
         // ##...
@@ -3312,6 +3339,7 @@ export class ExtSelectorCompiler {
             ':style',
         ]);
         this.proceduralOperatorNames = new Set([
+            'content',
             'has-text',
             'if',
             'if-not',
@@ -3959,6 +3987,8 @@ export class ExtSelectorCompiler {
         const arg = this.astSerialize(parts, false);
         if ( arg === undefined ) { return; }
         switch ( operator ) {
+        case 'content':
+            return this.compileSelector(arg);
         case 'has-text':
             return this.compileText(arg);
         case 'if':
@@ -4176,7 +4206,7 @@ export class ExtSelectorCompiler {
         const r = this.unquoteString(s);
         if ( r.i !== s.length ) { return; }
         const doc = globalThis.document;
-        if ( doc instanceof Object === false ) { return r.s; }
+        if ( doc instanceof Object === false || typeof ServiceWorkerGlobalScope !== "undefined" ) { return r.s; }
         try {
             const expr = doc.createExpression(r.s, null);
             expr.evaluate(doc, XPathResult.ANY_UNORDERED_NODE_TYPE);
@@ -4194,6 +4224,7 @@ export const proceduralOperatorTokens = new Map([
     [ '-abp-contains', 0b00 ],
     [ '-abp-has', 0b00, ],
     [ 'contains', 0b00, ],
+    [ 'content', 0b01, ],
     [ 'has', 0b01 ],
     [ 'has-text', 0b01 ],
     [ 'if', 0b00 ],
@@ -4207,9 +4238,10 @@ export const proceduralOperatorTokens = new Map([
     [ 'not', 0b01 ],
     [ 'nth-ancestor', 0b00 ],
     [ 'others', 0b11 ],
-    [ 'remove', 0b11 ],
+    [ 'remove', 0b01 ],
     [ 'remove-attr', 0b11 ],
     [ 'remove-class', 0b11 ],
+    [ 'shadow', 0b11, ],
     [ 'style', 0b11 ],
     [ 'upward', 0b01 ],
     [ 'watch-attr', 0b11 ],
@@ -4225,6 +4257,7 @@ export const utils = (( ) => {
         [ 'ext_ublock', 'ublock' ],
         [ 'ext_ubol', 'ubol' ],
         [ 'ext_devbuild', 'devbuild' ],
+        [ 'env_brave', 'brave' ],
         [ 'env_chromium', 'chromium' ],
         [ 'env_edge', 'edge' ],
         [ 'env_firefox', 'firefox' ],
@@ -4233,7 +4266,6 @@ export const utils = (( ) => {
         [ 'env_mv3', 'mv3' ],
         [ 'env_safari', 'safari' ],
         [ 'cap_html_filtering', 'html_filtering' ],
-        [ 'cap_user_stylesheet', 'user_stylesheet' ],
         [ 'cap_ipaddress', 'ipaddress' ],
         [ 'false', 'false' ],
         // Hoping ABP-only list maintainers can at least make use of it to
@@ -4376,13 +4408,10 @@ export const utils = (( ) => {
                 }
                 if ( part instanceof Object === false ) { continue; }
                 const content = part.content;
+                if ( typeof content !== 'string' ) { continue; }
                 const slices = this.splitter(content, env);
-                for ( let i = 0, n = slices.length - 1; i < n; i++ ) {
+                for ( let i = 0, n = slices.length; i < n; i += 2 ) {
                     const slice = content.slice(slices[i+0], slices[i+1]);
-                    if ( (i & 1) !== 0 ) {
-                        out.push(slice);
-                        continue;
-                    }
                     let lastIndex = 0;
                     for (;;) {
                         const match = reInclude.exec(slice);
@@ -4410,7 +4439,7 @@ export const utils = (( ) => {
         static prune(content, env) {
             const parts = this.splitter(content, env);
             const out = [];
-            for ( let i = 0, n = parts.length - 1; i < n; i += 2 ) {
+            for ( let i = 0, n = parts.length; i < n; i += 2 ) {
                 const beg = parts[i+0];
                 const end = parts[i+1];
                 out.push(content.slice(beg, end));

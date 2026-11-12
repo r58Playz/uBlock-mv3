@@ -216,6 +216,7 @@ class RedirectEngine {
             js: entry.toContent(),
             world: entry.world,
             dependencies: entry.dependencies.slice(),
+            priority: entry.priority ?? 0,
         };
     }
 
@@ -280,7 +281,7 @@ class RedirectEngine {
             const data = orphanizeString(
                 fields.slice(2).join(encoded ? '' : '\n')
             );
-            this.resources.set(name, RedirectEntry.fromDetails({ mime, data }));
+            this.resources.set(name, RedirectEntry.fromDetails({ mime, data, origin: 'user' }));
             if ( Array.isArray(details) ) {
                 const resource = this.resources.get(name);
                 for ( const { prop, value } of details ) {
@@ -334,13 +335,14 @@ class RedirectEngine {
             })(scriptletsModule)
         ];
 
-        const store = (name, data = undefined) => {
+        const storeWAR = (name, data = undefined) => {
             const details = redirectableResources.get(name);
             const entry = RedirectEntry.fromDetails({
                 mime: mimeFromName(name),
                 data,
                 warURL: `/web_accessible_resources/${name}`,
                 params: details.params,
+                origin: 'war',
             });
             this.resources.set(name, entry);
             if ( details.alias === undefined ) { return; }
@@ -357,7 +359,7 @@ class RedirectEngine {
             return new Promise(resolve => {
                 const reader = new FileReader();
                 reader.onload = ( ) => {
-                    store(name, reader.result);
+                    storeWAR(name, reader.result);
                     resolve();
                 };
                 reader.onabort = reader.onerror = ( ) => {
@@ -368,10 +370,10 @@ class RedirectEngine {
         };
 
         const processText = (name, text) => {
-            store(name, removeTopCommentBlock(text));
+            storeWAR(name, removeTopCommentBlock(text));
         };
 
-        const process = result => {
+        const processWAR = result => {
             const match = /^\/web_accessible_resources\/([^?]+)/.exec(result.url);
             if ( match === null ) { return; }
             const name = match[1];
@@ -382,14 +384,14 @@ class RedirectEngine {
 
         for ( const [ name, details ] of redirectableResources ) {
             if ( typeof details.data !== 'string' ) {
-                store(name);
+                storeWAR(name);
                 continue;
             }
             fetches.push(
                 fetcher(`/web_accessible_resources/${name}`, {
                     responseType: details.data
                 }).then(
-                    result => process(result)
+                    result => processWAR(result)
                 )
             );
         }
@@ -404,7 +406,7 @@ class RedirectEngine {
         for ( const [ name, entry ] of this.resources ) {
             out.set(name, {
                 canInject: typeof entry.data === 'string',
-                canRedirect: entry.warURL !== undefined,
+                canRedirect: Boolean(entry.warURL ?? entry.data),
                 aliasOf: '',
                 extensionPath: entry.warURL,
             });
@@ -419,26 +421,6 @@ class RedirectEngine {
         return Array.from(out).sort((a, b) => {
             return a[0].localeCompare(b[0]);
         });
-    }
-
-    getTrustedScriptletTokens() {
-        const out = [];
-        const isTrustedScriptlet = entry => {
-            if ( entry.requiresTrust !== true ) { return false; }
-            if ( entry.warURL !== undefined ) { return false; }
-            if ( typeof entry.data !== 'string' ) { return false; }
-            if ( entry.name.endsWith('.js') === false ) { return false; }
-            return true;
-        };
-        for ( const [ name, entry ] of this.resources ) {
-            if ( isTrustedScriptlet(entry) === false ) { continue; }
-            out.push(name.slice(0, -3));
-        }
-        for ( const [ alias, name ] of this.aliases ) {
-            if ( out.includes(name.slice(0, -3)) === false ) { continue; }
-            out.push(alias.slice(0, -3));
-        }
-        return out;
     }
 
     selfieFromResources(storage) {

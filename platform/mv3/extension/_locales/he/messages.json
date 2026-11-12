@@ -35,6 +35,10 @@
     "message": "מדיניות פרטיות",
     "description": "Link to privacy policy on GitHub (English)"
   },
+  "aboutDocumentation": {
+    "message": "Documentation",
+    "description": "Link to documentation in About pane"
+  },
   "popupFilteringModeLabel": {
     "message": "מצב מסנן",
     "description": "Label in the popup panel for the current filtering mode"
@@ -58,6 +62,10 @@
   "popupLessButton": {
     "message": "פחות",
     "description": "Label to be used to hide popup panel sections"
+  },
+  "popupNoWebsite": {
+    "message": "not a website",
+    "description": "Used when popup panel is opened for a local web page"
   },
   "3pGroupDefault": {
     "message": "ברירת מחדל",
@@ -99,6 +107,10 @@
     "message": "העתיקו לכאן את ה URL של רשימת המסננים",
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
+  "customListImportUserScriptsInfo": {
+    "message": "To enforce cosmetic or scriptlet filters from imported lists, you must grant uBO Lite permission to run user scripts.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+  },
   "customFiltersImportExportLabel": {
     "message": "יבוא / יצוא",
     "description": "Text label heading the import/export area of custom filters"
@@ -108,8 +120,8 @@
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
   "userScriptsInfo": {
-    "message": "בכדי לאפשר מסננים קוסמטיים או scriptlet מרשימות מיובאות, יש לאפשר ל uBO Lite להריץ סקריפטים של המשתמש. פתחו את התוספים או ההרחבות בדפדפן שלכם (<code>chrome://extensions</code> בכרום או <code>chrome://extensions</code> בפיירפוקס), פתחו את הפרטים של <b>uBO Lite</b>, ותנו <b>אישור לסקריפטים של משתמשים<b> (או \"לאפשר לתסריטי צד שלישי לא מאומתים לגשת לנתונים שלך\").",
-    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+    "message": "פתחו את התוספים או ההרחבות בדפדפן שלכם (<code>chrome://extensions</code> בכרום או <code>chrome://extensions</code> בפיירפוקס), פתחו את הפרטים של <b>uBO Lite</b>, ותנו <b>אישור לסקריפטים של משתמשים<b> (או \"לאפשר לתסריטי צד שלישי לא מאומתים לגשת לנתונים שלך\").",
+    "description": "A notice to inform user on how to enable 'user scripts' permission"
   },
   "aboutChangelog": {
     "message": "יומן שינויים",
@@ -282,6 +294,10 @@
   "sandboxEditorLabel": {
     "message": "ארגז חול ליצירת מסננים",
     "description": "Header for filter-creation section in the dashboard"
+  },
+  "sandboxEditorUserScriptsInfo": {
+    "message": "To enforce cosmetic or scriptlet filters from the sandbox, you must grant uBO Lite permission to run user scripts.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
   },
   "developerModeLabel": {
     "message": "מצב מפתחים",

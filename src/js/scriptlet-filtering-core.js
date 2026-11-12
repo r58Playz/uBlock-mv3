@@ -25,76 +25,16 @@ import { redirectEngine as reng } from './redirect-engine.js';
 
 /******************************************************************************/
 
-// For debugging convenience: all the top function calls will appear
-// at the bottom of a generated content script
-const codeSorter = (a, b) => {
-    if ( a.startsWith('try') ) { return 1; }
-    if ( b.startsWith('try') ) { return -1; }
-    return 0;
-};
-
-const normalizeRawFilter = (parser, sourceIsTrusted = false) => {
+const normalizeRawFilter = parser => {
     const args = parser.getScriptletArgs();
     if ( args.length !== 0 ) {
         let token = `${args[0]}.js`;
         if ( reng.aliases.has(token) ) {
             token = reng.aliases.get(token);
         }
-        if ( parser.isException() !== true ) {
-            if ( sourceIsTrusted !== true ) {
-                if ( reng.tokenRequiresTrust(token) ) { return; }
-            }
-        }
         args[0] = token.slice(0, -3);
     }
     return JSON.stringify(args);
-};
-
-const lookupScriptlet = (rawToken, mainMap, isolatedMap, debug = false) => {
-    if ( mainMap.has(rawToken) || isolatedMap.has(rawToken) ) { return; }
-    const args = JSON.parse(rawToken);
-    const token = `${args[0]}.js`;
-    const details = reng.contentFromName(token, 'text/javascript');
-    if ( details === undefined ) { return; }
-    const targetWorldMap = details.world !== 'ISOLATED' ? mainMap : isolatedMap;
-    const match = /^function\s+([^(\s]+)\s*\(/.exec(details.js);
-    const fname = match && match[1];
-    const content = patchScriptlet(fname, details.js, args.slice(1));
-    if ( fname ) {
-        targetWorldMap.set(token, details.js);
-    }
-    const dependencies = details.dependencies || [];
-    while ( dependencies.length !== 0 ) {
-        const token = dependencies.shift();
-        if ( targetWorldMap.has(token) ) { continue; }
-        const details = reng.contentFromName(token, 'fn/javascript') ||
-            reng.contentFromName(token, 'text/javascript');
-        if ( details === undefined ) { continue; }
-        targetWorldMap.set(token, details.js);
-        if ( Array.isArray(details.dependencies) === false ) { continue; }
-        dependencies.push(...details.dependencies);
-    }
-    targetWorldMap.set(rawToken, [
-        'try {',
-            `\t${content}`,
-        '} catch (e) {',
-            debug ? '\tconsole.error(e);' : '',
-        '}',
-    ].join('\n'));
-};
-
-// Fill-in scriptlet argument placeholders.
-const patchScriptlet = (fname, content, arglist) => {
-    if ( fname ) {
-        content = `${fname}({{args}});`;
-    } else {
-        for ( let i = 0; i < arglist.length; i++ ) {
-            content = content.replace(`{{${i+1}}}`, arglist[i]);
-        }
-    }
-    return content.replace('{{args}}',
-        JSON.stringify(arglist).slice(1,-1).replace(/\$/g, '$$$')
-    );
 };
 
 const requote = s => {
@@ -144,7 +84,7 @@ export class ScriptletFilteringEngine {
 
         // Only exception filters are allowed to be global.
         const isException = parser.isException();
-        const normalized = normalizeRawFilter(parser, writer.properties.get('trustedSource'));
+        const normalized = normalizeRawFilter(parser);
 
         // Can fail if there is a mismatch with trust requirement
         if ( normalized === undefined ) { return; }
@@ -165,7 +105,8 @@ export class ScriptletFilteringEngine {
 
         for ( const { hn, not, bad } of parser.getExtFilterDomainIterator() ) {
             if ( bad ) { continue; }
-            const prefix = ((isException ? 1 : 0) ^ (not ? 1 : 0)) ? '-' : '+';
+            if ( isException && not ) { continue; }
+            const prefix = isException || not ? '-' : '+';
             writer.push([ 32, hn, `${prefix}${normalized}` ]);
         }
     }
@@ -196,7 +137,7 @@ export class ScriptletFilteringEngine {
         return true;
     }
 
-    retrieve(request, options = {}) {
+    retrieve(request) {
         if ( this.scriptletDB.size === 0 ) { return; }
 
         const all = new Set();
@@ -222,7 +163,7 @@ export class ScriptletFilteringEngine {
 
         // Wholly disable scriptlet injection?
         if ( all.has('-[]') ) {
-            return { filters: [ '#@#+js()' ] };
+            return [ '#@#+js()' ];
         }
 
         // Split filters in different groups
@@ -238,79 +179,10 @@ export class ScriptletFilteringEngine {
             }
         }
 
-        const mainWorldMap = new Map();
-        const isolatedWorldMap = new Map();
-
-        for ( const token of scriptlets ) {
-            lookupScriptlet(token, mainWorldMap, isolatedWorldMap, options.debug);
-        }
-
-        if ( scriptlets.size !== 0 ) {
-            if ( mainWorldMap.size === 0 ) {
-                if ( isolatedWorldMap.size === 0 ) { return; }
-            }
-        }
-
-        const mainWorldCode = [];
-        for ( const js of mainWorldMap.values() ) {
-            mainWorldCode.push(js);
-        }
-        mainWorldCode.sort(codeSorter);
-
-        const isolatedWorldCode = [];
-        for ( const js of isolatedWorldMap.values() ) {
-            isolatedWorldCode.push(js);
-        }
-        isolatedWorldCode.sort(codeSorter);
-
-        const scriptletDetails = {
-            mainWorld: mainWorldCode.join('\n\n'),
-            isolatedWorld: isolatedWorldCode.join('\n\n'),
-            filters: [
-                ...Array.from(scriptlets).map(a => decompile(a, false)),
-                ...Array.from(exceptions).map(a => decompile(a, true)),
-            ],
-        };
-
-        const scriptletGlobals = options.scriptletGlobals || {};
-
-        if ( options.debug ) {
-            scriptletGlobals.canDebug = true;
-        }
-
-        const scriptletGlobalsJSON = JSON.stringify(scriptletGlobals, null, 4);
-
-        return {
-            mainWorld: scriptletDetails.mainWorld === '' ? '' : [
-                '(function() {',
-                '// >>>> start of private namespace',
-                '',
-                options.debugScriptlets ? 'debugger;' : ';',
-                '',
-                // For use by scriptlets to share local data among themselves
-                `const scriptletGlobals = ${scriptletGlobalsJSON};`,
-                '',
-                scriptletDetails.mainWorld,
-                '',
-                '// <<<< end of private namespace',
-                '})();',
-            ].join('\n'),
-            isolatedWorld: scriptletDetails.isolatedWorld === '' ? '' : [
-                'function() {',
-                '// >>>> start of private namespace',
-                '',
-                options.debugScriptlets ? 'debugger;' : ';',
-                '',
-                // For use by scriptlets to share local data among themselves
-                `const scriptletGlobals = ${scriptletGlobalsJSON};`,
-                '',
-                scriptletDetails.isolatedWorld,
-                '',
-                '// <<<< end of private namespace',
-                '}',
-            ].join('\n'),
-            filters: scriptletDetails.filters,
-        };
+        return [
+            ...Array.from(scriptlets).map(a => decompile(a, false)),
+            ...Array.from(exceptions).map(a => decompile(a, true)),
+        ];
     }
 }
 

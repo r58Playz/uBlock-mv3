@@ -105,8 +105,9 @@ publish-chromium:
 		ghowner=gorhill \
 		ghrepo=uBlock \
 		ghtag=$(version) \
-		ghasset=chromium \
-		storeid=cjpalhdlnbpafiamejdnhcphjbkeiagm
+		ghasset=chromium.zip \
+		crxupdatepath=dist/chromium/update.xml \
+		crxkeytoken=ubo_dev_key_path
 
 # Usage: make publish-edge version=?
 publish-edge:
@@ -114,7 +115,7 @@ publish-edge:
 		ghowner=gorhill \
 		ghrepo=uBlock \
 		ghtag=$(version) \
-		ghasset=chromium \
+		ghasset=chromium.zip \
 		datebasedmajor=1 \
 		storeid=odfafepnkmbhccpbejgmiehpchacaeak \
 		productid=$(shell secret-tool lookup token ubo_edge_id) \
@@ -136,8 +137,9 @@ publish-dev-chromium:
 		ghowner=gorhill \
 		ghrepo=uBlock \
 		ghtag=$(version) \
-		ghasset=chromium \
-		storeid=cgbcahbpdhpcegmbfconppldiemgcoii
+		ghasset=chromium.zip \
+		crxupdatepath=dist/chromium/update-dev.xml \
+		crxkeytoken=ubo_dev_key_path
 
 # Usage: make publish-dev-firefox version=?
 publish-dev-firefox:

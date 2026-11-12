@@ -35,10 +35,11 @@ import {
 import { ubolog, ubologSet } from './console.js';
 
 import cosmeticFilteringEngine from './cosmetic-filtering.js';
+import { getTrustedTokens } from './trusted-tokens.js';
 import { hostnameFromURI } from './uri-utils.js';
 import io from './assets.js';
 import logger from './logger.js';
-import publicSuffixList from '../lib/publicsuffixlist/publicsuffixlist.js';
+import publicSuffixList from './publicsuffix.js';
 import punycode from '../lib/punycode.js';
 import { redirectEngine } from './redirect-engine.js';
 import staticExtFilteringEngine from './static-ext-filtering.js';
@@ -282,6 +283,7 @@ import µb from './background.js';
 
     for ( const key in hsDefault ) {
         if ( Object.hasOwn(hsDefault, key) === false ) { continue; }
+//        if ( Object.hasOwn(hsAdmin, name) ) { continue; } // this does not work in upstream uBlock origin because it uses `name` from globalThis
         if ( typeof hs[key] !== typeof hsDefault[key] ) { continue; }
         this.hiddenSettings[key] = hs[key];
     }
@@ -404,10 +406,7 @@ onBroadcast(msg => {
 /******************************************************************************/
 
 µb.saveWhitelist = function() {
-    vAPI.storage.set({
-        netWhitelist: this.arrayFromWhitelist(this.netWhitelist)
-    });
-    this.netWhitelistModifyTime = Date.now();
+    vAPI.storage.set({ netWhitelist: this.trustedSites.toLines() });
 };
 
 /******************************************************************************/
@@ -959,7 +958,6 @@ onBroadcast(msg => {
         if ( vAPI.Net.canSuspend() ) {
             vAPI.net.suspend();
         }
-        redirectEngine.reset();
         staticExtFilteringEngine.reset();
         staticNetFilteringEngine.reset();
         µb.selfieManager.destroy();
@@ -1106,16 +1104,16 @@ onBroadcast(msg => {
 
     // Populate the writer with information potentially useful to the
     // client compilers.
-    const trustedSource = details.trustedSource === true;
     if ( details.assetKey ) {
         writer.properties.set('name', details.assetKey);
-        writer.properties.set('trustedSource', trustedSource);
     }
     const assetName = details.assetKey ? details.assetKey : '?';
     const parser = new sfp.AstFilterParser({
-        trustedSource,
+        trustedSource: details.trustedSource === true,
         maxTokenLength: staticNetFilteringEngine.MAX_TOKEN_LENGTH,
         nativeCssHas: vAPI.webextFlavor.env.includes('native_css_has'),
+        canFilterResponseBody: µb.canFilterResponseData,
+        trustedTokens: getTrustedTokens(),
     });
     const compiler = staticNetFilteringEngine.createCompiler(parser);
     const lineIter = new LineIterator(
@@ -1244,6 +1242,7 @@ onBroadcast(msg => {
 
 µb.loadPublicSuffixList = async function() {
     const psl = publicSuffixList;
+    if ( Boolean(psl.parse) === false ) { return; }
 
     // WASM is nice but not critical
     if ( vAPI.canWASM && this.hiddenSettings.disableWebAssembly !== true ) {
@@ -1278,7 +1277,6 @@ onBroadcast(msg => {
     } catch (reason) {
         ubolog(reason);
     }
-
     const result = await io.get(this.pslAssetKey);
     if ( result.content !== '' ) {
         this.compilePublicSuffixList(result.content);
@@ -1287,6 +1285,7 @@ onBroadcast(msg => {
 
 µb.compilePublicSuffixList = function(content) {
     const psl = publicSuffixList;
+    if ( Boolean(psl.parse) === false ) { return; }
     psl.parse(content, punycode.toASCII);
     ubolog(`Loaded PSL from ${this.pslAssetKey}`);
     return io.toCache(`selfie/${this.pslAssetKey}`, psl.toSelfie());
@@ -1337,7 +1336,9 @@ onBroadcast(msg => {
     const load = async function() {
         if ( µb.selfieIsInvalid ) { return false; }
         try {
-            const results = await Promise.all([
+            let r = await µb.loadRedirectResources();
+            if ( r !== true ) { return r; }
+            r = await Promise.all([
                 loadMain(),
                 io.fromCache('selfie/staticExtFilteringEngine').then(selfie =>
                     staticExtFilteringEngine.fromSelfie(selfie)
@@ -1346,9 +1347,7 @@ onBroadcast(msg => {
                     staticNetFilteringEngine.fromSelfie(selfie)
                 ),
             ]);
-            if ( results.every(v => v) ) {
-                return µb.loadRedirectResources();
-            }
+            return r.every(v => v);
         }
         catch (reason) {
             ubolog(reason);
@@ -1458,7 +1457,7 @@ onBroadcast(msg => {
         Array.isArray(toOverwrite.trustedSiteDirectives) &&
         toOverwrite.trustedSiteDirectives.length !== 0
     ) {
-        µb.netWhitelistDefault = toOverwrite.trustedSiteDirectives.slice();
+        µb.defaultTrustedSiteDirectives = toOverwrite.trustedSiteDirectives.slice();
         bin.netWhitelist = toOverwrite.trustedSiteDirectives.slice();
         binNotEmpty = true;
     } else if ( Array.isArray(data.whitelist) ) {

@@ -27,6 +27,7 @@ import {
 } from './static-filtering-io.js';
 
 import { LineIterator } from './text-utils.js';
+import { getTrustedTokens } from './trusted-tokens.js';
 import staticNetFilteringEngine from './static-net-filtering.js';
 
 /******************************************************************************/
@@ -107,28 +108,25 @@ function addExtendedToDNR(context, parser) {
             context.scriptletFilters = new Map();
         }
         const exception = parser.isException();
-        const args = parser.getScriptletArgs();
+        const args = parser.getScriptletArgs() || [];
         const argsToken = JSON.stringify(args);
         for ( const { hn, not, bad } of parser.getExtFilterDomainIterator() ) {
             if ( bad ) { continue; }
-            if ( exception ) { continue; }
-            let details = context.scriptletFilters.get(argsToken);
-            if ( details === undefined ) {
-                context.scriptletFilters.set(argsToken, details = { args });
+            if ( exception && not ) { continue; }
+            const details = context.scriptletFilters.get(argsToken) ?? {};
+            if ( details.args === undefined ) {
+                context.scriptletFilters.set(argsToken, details);
+                details.args = args;
                 if ( context.trustedSource ) {
                     details.trustedSource = true;
                 }
             }
-            if ( not ) {
-                if ( details.excludeMatches === undefined ) {
-                    details.excludeMatches = [];
-                }
+            if ( exception || not ) {
+                details.excludeMatches ??= [];
                 details.excludeMatches.push(hn);
                 continue;
             }
-            if ( details.matches === undefined ) {
-                details.matches = [];
-            }
+            details.matches ??= [];
             if ( details.matches.includes('*') ) { continue; }
             if ( hn === '*' ) {
                 details.matches = [ '*' ];
@@ -227,7 +225,9 @@ function addExtendedToDNR(context, parser) {
         if ( not && exception ) { continue; }
         if ( not || exception ) {
             excludeMatches.push(hn);
-        } else if ( hn !== '*' ) {
+        } else if ( hn === '*' ) {
+            addGenericCosmeticFilter(context, compiled, false);
+        } else {
             matches.push(hn);
         }
     }
@@ -276,6 +276,7 @@ function addToDNR(context, list) {
         nativeCssHas: env.includes('native_css_has'),
         badTypes: [ sfp.NODE_TYPE_NET_OPTION_NAME_REDIRECTRULE ],
         trustedSource: list.trustedSource || undefined,
+        trustedTokens: getTrustedTokens(),
     });
     const compiler = staticNetFilteringEngine.createCompiler();
 
@@ -434,25 +435,6 @@ function finalizeRuleset(context, network) {
         for ( const rule of ruleset ) {
             rulesetMap.set(ruleId++, rule);
         }
-    }
-    mergeRules(rulesetMap, 'resourceTypes');
-    mergeRules(rulesetMap, 'removeParams');
-    mergeRules(rulesetMap, 'initiatorDomains');
-    mergeRules(rulesetMap, 'requestDomains');
-    mergeRules(rulesetMap, 'responseHeaders');
-
-    // Convert back single-entry requestDomains into pattern-based filters
-    // https://github.com/uBlockOrigin/uBOL-home/issues/327
-    // TODO: Remove when (if) Safari is changed to interpret requestDomains as
-    //       in other browsers.
-    for ( const rule of rulesetMap.values() ) {
-        const { condition } = rule;
-        if ( condition?.requestDomains === undefined ) { continue; }
-        if ( condition.requestDomains.length !== 1 ) { continue; }
-        if ( condition.urlFilter !== undefined ) { continue; }
-        if ( condition.regexFilter !== undefined ) { continue; }
-        condition.urlFilter = `||${condition.requestDomains[0]}^`;
-        condition.requestDomains = undefined;
     }
 
     // Patch id

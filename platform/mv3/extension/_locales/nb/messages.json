@@ -35,6 +35,10 @@
     "message": "Personvernpraksis",
     "description": "Link to privacy policy on GitHub (English)"
   },
+  "aboutDocumentation": {
+    "message": "Dokumentasjon",
+    "description": "Link to documentation in About pane"
+  },
   "popupFilteringModeLabel": {
     "message": "filtreringsmodus",
     "description": "Label in the popup panel for the current filtering mode"
@@ -58,6 +62,10 @@
   "popupLessButton": {
     "message": "Mindre",
     "description": "Label to be used to hide popup panel sections"
+  },
+  "popupNoWebsite": {
+    "message": "not a website",
+    "description": "Used when popup panel is opened for a local web page"
   },
   "3pGroupDefault": {
     "message": "Standard",
@@ -88,16 +96,20 @@
     "description": "Header for a ruleset section in 'Filter lists pane'"
   },
   "3pGroupImported": {
-    "message": "Imported lists",
+    "message": "Importerte lister",
     "description": "Header for a ruleset section in 'Filter lists pane'"
   },
   "customListImportLabel": {
-    "message": "Add filter list…",
+    "message": "Legg til filterlister…",
     "description": "Text label heading the import area of custom filter lists"
   },
   "customListImportPlaceholder": {
     "message": "URL of the filter list to add",
     "description": "Placeholder text which describes the purpose of the textarea widget"
+  },
+  "customListImportUserScriptsInfo": {
+    "message": "To enforce cosmetic or scriptlet filters from imported lists, you must grant uBO Lite permission to run user scripts.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
   },
   "customFiltersImportExportLabel": {
     "message": "Importér/Eksportér",
@@ -108,8 +120,8 @@
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
   "userScriptsInfo": {
-    "message": "To enforce cosmetic or scriptlet filters from imported lists, you must grant uBO Lite permission to run user scripts. Open your browser's extensions page (<code>chrome://extensions</code> in Chrome or <code>about:addons</code> in Firefox), open <b>uBO Lite</b> details, and toggle on <b>Allow user scripts</b> (also referred to as “unverified third-party scripts”).",
-    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+    "message": "Open your browser's extensions page (<code>chrome://extensions</code> in Chrome or <code>about:addons</code> in Firefox), open <b>uBO Lite</b> details, and toggle on <b>Allow user scripts</b> (also referred to as “unverified third-party scripts”).",
+    "description": "A notice to inform user on how to enable 'user scripts' permission"
   },
   "aboutChangelog": {
     "message": "Endringslogg",
@@ -272,7 +284,7 @@
     "description": "Short description for a checkbox in the options page"
   },
   "enablePopupBlockLabel": {
-    "message": "Aktiver popup blokkering",
+    "message": "Aktiver popup-blokkering",
     "description": "Label for a checkbox in the options page"
   },
   "enablePopupBlockLegend": {
@@ -282,6 +294,10 @@
   "sandboxEditorLabel": {
     "message": "Filter-creation sandbox",
     "description": "Header for filter-creation section in the dashboard"
+  },
+  "sandboxEditorUserScriptsInfo": {
+    "message": "To enforce cosmetic or scriptlet filters from the sandbox, you must grant uBO Lite permission to run user scripts.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
   },
   "developerModeLabel": {
     "message": "Utviklermodus",
@@ -344,7 +360,7 @@
     "description": "A button to navigate to the blocked page"
   },
   "zapperTipEnter": {
-    "message": "Gå til element­fjernings­modus",
+    "message": "Fjern et element",
     "description": "Tooltip for the button used to enter zapper mode"
   },
   "zapperTipQuit": {
@@ -396,11 +412,11 @@
     "description": "Text for buttons used to add content"
   },
   "importAndAppendButton": {
-    "message": "Importer og legg til...",
+    "message": "Importer og legg til…",
     "description": "Text for buttons used to import and append content"
   },
   "exportButton": {
-    "message": "Eksporter...",
+    "message": "Eksporter…",
     "description": "Text for buttons used to export content"
   },
   "backupButton": {

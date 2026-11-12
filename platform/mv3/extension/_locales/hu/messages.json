@@ -35,6 +35,10 @@
     "message": "Adatvédelmi irányelvek",
     "description": "Link to privacy policy on GitHub (English)"
   },
+  "aboutDocumentation": {
+    "message": "Dokumentáció",
+    "description": "Link to documentation in About pane"
+  },
   "popupFilteringModeLabel": {
     "message": "szűrési mód",
     "description": "Label in the popup panel for the current filtering mode"
@@ -58,6 +62,10 @@
   "popupLessButton": {
     "message": "Kevesebb",
     "description": "Label to be used to hide popup panel sections"
+  },
+  "popupNoWebsite": {
+    "message": "nem egy weboldal",
+    "description": "Used when popup panel is opened for a local web page"
   },
   "3pGroupDefault": {
     "message": "Alapértelmezett",
@@ -99,6 +107,10 @@
     "message": "Illessze be ide a hozzáadandó szűrőlista webcímét",
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
+  "customListImportUserScriptsInfo": {
+    "message": "To enforce cosmetic or scriptlet filters from imported lists, you must grant uBO Lite permission to run user scripts.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+  },
   "customFiltersImportExportLabel": {
     "message": "Importálás/exportálás",
     "description": "Text label heading the import/export area of custom filters"
@@ -108,8 +120,8 @@
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
   "userScriptsInfo": {
-    "message": "Az importált listákból származó kozmetikai szűrők alkalmazásához engedélyezni kell az uBO Lite számára, hogy felhasználói parancsfájlokat futtatsson. Nyissa meg a böngészőkiegészítők vagy bővítmények oldalát (<code>chrome://extensions</code> a Chrome-ban vagy <code>about:addons</code> a Firefoxban), nyissa meg a <b>uBO Lite</b> részleteit, és kapcsolja be a <b>Felhasználói parancsfájlok engedélyezése</b> lehetőséget (más néven „nem ellenőrzött külső parancsfájlok”).",
-    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+    "message": "Nyissa meg a böngészőkiegészítők vagy bővítmények oldalát (<code>chrome://extensions</code> a Chrome-ban vagy <code>about:addons</code> a Firefoxban), nyissa meg a <b>uBO Lite</b> részleteit, és kapcsolja be a <b>Felhasználói parancsfájlok engedélyezése</b> lehetőséget (más néven „nem ellenőrzött külső parancsfájlok”).",
+    "description": "A notice to inform user on how to enable 'user scripts' permission"
   },
   "aboutChangelog": {
     "message": "Változások listája",
@@ -283,6 +295,10 @@
     "message": "Szűrőlétrehozási homokozó",
     "description": "Header for filter-creation section in the dashboard"
   },
+  "sandboxEditorUserScriptsInfo": {
+    "message": "To enforce cosmetic or scriptlet filters from the sandbox, you must grant uBO Lite permission to run user scripts.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+  },
   "developerModeLabel": {
     "message": "Fejlesztői mód",
     "description": "Label for a checkbox in the options page"
@@ -344,7 +360,7 @@
     "description": "A button to navigate to the blocked page"
   },
   "zapperTipEnter": {
-    "message": "Belépés az elemeltávolító módba",
+    "message": "Elem eltávolítása",
     "description": "Tooltip for the button used to enter zapper mode"
   },
   "zapperTipQuit": {

@@ -1,3 +1,88 @@
+- [Prevent `war:`-related filters for the time being](https://github.com/gorhill/uBlock/commit/150df125fd)
+- [Validate about to be created filter in element picker](https://github.com/gorhill/uBlock/commit/b1f7d27c87)
+- [Prevent re-entrancy with recursive operator in JSONPath](https://github.com/gorhill/uBlock/commit/b6fec9089f)
+- [Improve `[trusted-]edit-inbound-object` scriptlet](https://github.com/gorhill/uBlock/commit/a20cfcebd8)
+- [Add support for iso-8850-2 in response body filtering code](https://github.com/gorhill/uBlock/commit/ca7aa6c55f)
+- [Improve `trusted-prevent-dom-bypass` scriptlet](https://github.com/gorhill/uBlock/commit/1492d7f979)
+- [Improve `JSONPath`](https://github.com/gorhill/uBlock/commit/006dfc4da9)
+- [Improve `googletagservices_gpt.js` shim](https://github.com/gorhill/uBlock/commit/f609ebc5e9)
+- [Add `freestar_pubfig.js` shim](https://github.com/gorhill/uBlock/commit/341f23df9c)
+- [Fix parsing of `permissions` filter option](https://github.com/gorhill/uBlock/commit/bb2e13b3c6)
+- [Improve `googlesyndication_adsbygoogle.js` shim](https://github.com/gorhill/uBlock/commit/4dddc2adb0)
+- [Use new `publicSuffix` API when available](https://github.com/gorhill/uBlock/commit/a67ea6acdd)
+- [Add `trusted-edit-inbound-element` sriptlet](https://github.com/gorhill/uBlock/commit/1afbde2e7a)
+- [Refactor scriptlet injection code](https://github.com/gorhill/uBlock/commit/9af8ef4c6b)
+- [Improve jsonl-edit-fetch-response/jsonl-edit-xhr-response scriptlets](https://github.com/gorhill/uBlock/commit/42bcca027b)
+- [Export "My filters" content as an array in JSON backup file](https://github.com/gorhill/uBlock/commit/80f5a99fe4)
+- [Improve `prevent-clipboard-write` scriptlet](https://github.com/gorhill/uBlock/commit/e530864c46)
+
+----------
+
+# 1.75.4
+
+- [Launch element picker only with a verified secret token](https://github.com/gorhill/uBlock/commit/9859477ebc)
+
+----------
+
+# 1.75.2
+
+- [Avoid use of potentially tainted XHR methods in scriptlets](https://github.com/gorhill/uBlock/commit/9a083e7e54)
+
+----------
+
+# 1.75.0
+
+- [Improve `remove-attr` scriptlet](https://github.com/gorhill/uBlock/commit/bd98bcace0)
+- [Fix parsing of invalid regex-like domain in static extended filters](https://github.com/gorhill/uBlock/commit/bfbd7f609e)
+- [Improve `remove-node-text`/`replace-node-text` scriptlets](https://github.com/gorhill/uBlock/commit/71faa0b23f)
+- [Improve `prevent-clipboard-write` scriptlet](https://github.com/gorhill/uBlock/commit/457c510093)
+- [Address multiple static filter parser issues](https://github.com/gorhill/uBlock/commit/3ab731942e)
+- [Treat resources with data as redirectable](https://github.com/gorhill/uBlock/commit/c9eb5b276d)
+- [Add `mpegdash-prune` scriptlet](https://github.com/gorhill/uBlock/commit/323b4ce279)
+- [Improve `xmlPrune` scriptlet](https://github.com/gorhill/uBlock/commit/1235e4dd27)
+- [Improve procedural operator `:matches-path()`](https://github.com/gorhill/uBlock/commit/43d3c74ce7)
+
+----------
+
+# 1.74.0
+
+- [Fix possible injection of scriptlets requiring trust from non-trusted sources](https://github.com/gorhill/uBlock/commit/a46d5c8e75)
+- [Import `google-ima-dai` shim from AdGuard shims](https://github.com/gorhill/uBlock/commit/933efff4dd)
+- [Replace List-KR with filterslists-KO](https://github.com/gorhill/uBlock/commit/20d3c5b9d0)
+- [Remove support for `cap_user_stylesheet`](https://github.com/gorhill/uBlock/commit/fb09b0947d)
+- [Improve scriptlets framework](https://github.com/gorhill/uBlock/commit/57ade5f484)
+- [Add `env_brave` preparser token](https://github.com/gorhill/uBlock/commit/0c56103a40) (by @ryanbr)
+- [Add set/unset/given cookie values](https://github.com/gorhill/uBlock/commit/a796fd7daf) (by @ryanbr)
+- [Add procedural operator `content(...)`, to lookup elements inside `template` tags](https://github.com/gorhill/uBlock/commit/25d413803d)
+- [Improve `prevent-clipboard-write` scriptlet](https://github.com/gorhill/uBlock/commit/8a85e04907)
+- [Improve `json-edit` scriptlet](https://github.com/gorhill/uBlock/commit/0fdbfdb2b5)
+- [Revisit scriptlets' `getExtraArgs` implementation](https://github.com/gorhill/uBlock/commit/505fbc7a75)
+
+----------
+
+# 1.73.0
+
+- [[logger] Preserve whitespace characters](https://github.com/gorhill/uBlock/commit/ef981d09b5)
+- [Improve `proxy-apply` utility scriptlet](https://github.com/gorhill/uBlock/commit/be3bb05fce)
+- [Improve `abort-current-script` scriptlet](https://github.com/gorhill/uBlock/commit/84e4bd7659)
+- [Improve `prevent-addEventListener` scriptlet](https://github.com/gorhill/uBlock/commit/89fe40d73f)
+- [Add shim for `piano-analytics.js`](https://github.com/gorhill/uBlock/commit/5dab3cbd24)
+- [Improve `trusted-click-element` scriptlet](https://github.com/gorhill/uBlock/commit/bdd39fe606)
+- [Add `prevent-clipboard-write` scriptlet](https://github.com/gorhill/uBlock/commit/735f61b8a4)
+- [Improve `prevent-bab` scriptlet](https://github.com/gorhill/uBlock/commit/6772215c35)
+- [[jsonpath] Increase RFC9535 compliance](https://github.com/gorhill/uBlock/commit/b123c23a4f)
+- [Dot notation before bracket notation is not valid](https://github.com/gorhill/uBlock/commit/028ffdbea3)
+
+----------
+
+# 1.72.2
+
+- [Add missing test against `null` object](https://github.com/gorhill/uBlock/commit/74e6c8fe3f)
+
+----------
+
+# 1.72.0
+
 - [Fix broken rendering of final URL in strict-block page](https://github.com/gorhill/uBlock/commit/fe8ce9804c)
 - [Fix potential exception in set-attribute scriptlet](https://github.com/gorhill/uBlock/commit/37fe5d9cbe)
 - [Improve parsing/interpretation of consecutive `$$` in network filters](https://github.com/gorhill/uBlock/commit/347f9f7fda)

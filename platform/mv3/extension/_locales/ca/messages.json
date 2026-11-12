@@ -35,6 +35,10 @@
     "message": "Política de privadesa",
     "description": "Link to privacy policy on GitHub (English)"
   },
+  "aboutDocumentation": {
+    "message": "Documentació",
+    "description": "Link to documentation in About pane"
+  },
   "popupFilteringModeLabel": {
     "message": "mode de filtre",
     "description": "Label in the popup panel for the current filtering mode"
@@ -59,6 +63,10 @@
     "message": "Menys",
     "description": "Label to be used to hide popup panel sections"
   },
+  "popupNoWebsite": {
+    "message": "no és un lloc web",
+    "description": "Used when popup panel is opened for a local web page"
+  },
   "3pGroupDefault": {
     "message": "Per defecte",
     "description": "Header for a ruleset section in 'Filter lists pane'"
@@ -72,7 +80,7 @@
     "description": "Header for a ruleset section in 'Filter lists pane'"
   },
   "3pGroupMalware": {
-    "message": "Dominis de programari maliciós",
+    "message": "Protecció contra programari maliciós, seguretat",
     "description": "Header for a ruleset section in 'Filter lists pane'"
   },
   "3pGroupAnnoyances": {
@@ -99,6 +107,10 @@
     "message": "Enganxeu aquí l'URL de la llista de filtres per a afegir-la",
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
+  "customListImportUserScriptsInfo": {
+    "message": "Per a aplicar filtres cosmètics o scripts a les llistes importades, doneu permís a l'uBO Lite d'execució de scripts d'usuari.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+  },
   "customFiltersImportExportLabel": {
     "message": "Importa/Exporta",
     "description": "Text label heading the import/export area of custom filters"
@@ -108,8 +120,8 @@
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
   "userScriptsInfo": {
-    "message": "Per a aplicar filtres cosmètics o de scripts mitjançant llistes importades, doneu permís a l'uBO Lite d'execució de scripts d'usuari. Obriu la pàgina d'extensions del navegador (<code>chrome://extensions</code> al Chrome o <code>about:addons</code> al Firefox), obriu els detalls d'<b>uBO Lite</b> i activeu <b>Permet scripts d'usuari</b> (també anomenats «scripts de tercers no verificats»).",
-    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+    "message": "Obriu la pàgina d'extensions del navegador (<code>chrome://extensions</code> al Chrome o <code>about:addons</code> al Firefox), obriu els detalls d'<b>uBO Lite</b> i activeu <b>Permet scripts d'usuari</b> (també anomenat «scripts de tercers no verificats»).",
+    "description": "A notice to inform user on how to enable 'user scripts' permission"
   },
   "aboutChangelog": {
     "message": "Registre de canvis",
@@ -272,7 +284,7 @@
     "description": "Short description for a checkbox in the options page"
   },
   "enablePopupBlockLabel": {
-    "message": "Activa el bloqueig de finestres emergents",
+    "message": "Activa el blocatge de finestres emergents",
     "description": "Label for a checkbox in the options page"
   },
   "enablePopupBlockLegend": {
@@ -283,6 +295,10 @@
     "message": "Entorn de proves per a la creació de filtres",
     "description": "Header for filter-creation section in the dashboard"
   },
+  "sandboxEditorUserScriptsInfo": {
+    "message": "Per a aplicar filtres cosmètics o scripts des de l'entorn de proves, doneu permís a l'uBO Lite d'execució de scripts d'usuari.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+  },
   "developerModeLabel": {
     "message": "Mode de desenvolupador",
     "description": "Label for a checkbox in the options page"
@@ -292,7 +308,7 @@
     "description": "Short description for a checkbox in the options page"
   },
   "settingsBackupRestoreLabel": {
-    "message": "Còpia de seguretat / Restaura",
+    "message": "Còpia de seguretat",
     "description": "The header text for the back up/restore section"
   },
   "settingsBackupRestoreSummary": {
@@ -344,7 +360,7 @@
     "description": "A button to navigate to the blocked page"
   },
   "zapperTipEnter": {
-    "message": "Elimina un element",
+    "message": "Suprimeix un element",
     "description": "Tooltip for the button used to enter zapper mode"
   },
   "zapperTipQuit": {
@@ -416,7 +432,7 @@
     "description": "Text for buttons used to reset configurations to default"
   },
   "resetToDefaultConfirm": {
-    "message": "S'eliminaran tots els paràmetres personalitzats. Voleu restablir els paràmetres per defecte?",
+    "message": "Tots els paràmetres personalitzats seran suprimits. Voleu restablir la configuració per defecte?",
     "description": "Message asking user to confirm reset to default settings"
   },
   "dnrRulesWarning": {

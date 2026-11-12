@@ -1252,6 +1252,10 @@
     "message": "View source code…",
     "description": "A context menu entry, to view the source code of the target resource"
   },
+  "contextMenuOpenPopupPanel": {
+    "message": "Open uBlock₀ panel for this page",
+    "description": "A context menu entry, shown on Chromium mobile where there is no toolbar button, to open the popup panel in a tab"
+  },
   "shortcutCapturePlaceholder": {
     "message": "Type a shortcut",
     "description": "Placeholder string for input field used to capture a keyboard shortcut"

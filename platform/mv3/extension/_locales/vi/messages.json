@@ -4,7 +4,7 @@
     "description": "extension name."
   },
   "extShortDesc": {
-    "message": "Trình chặn nội dung không cần quyền. Chặn quảng cáo, trình theo dõi, công cụ khai thác tiền số và hơn thế nữa ngay sau khi cài đặt.",
+    "message": "Trình chặn nội dung hiệu quả. Chặn quảng cáo, trình theo dõi, công cụ khai thác tiền số và hơn thế nữa ngay sau khi cài đặt.",
     "description": "this will be in the Chrome web store: must be 132 characters or less"
   },
   "perRulesetStats": {
@@ -35,6 +35,10 @@
     "message": "Chính sách bảo mật",
     "description": "Link to privacy policy on GitHub (English)"
   },
+  "aboutDocumentation": {
+    "message": "Tài liệu hướng dẫn",
+    "description": "Link to documentation in About pane"
+  },
   "popupFilteringModeLabel": {
     "message": "chế độ lọc",
     "description": "Label in the popup panel for the current filtering mode"
@@ -58,6 +62,10 @@
   "popupLessButton": {
     "message": "Thu gọn",
     "description": "Label to be used to hide popup panel sections"
+  },
+  "popupNoWebsite": {
+    "message": "không phải trang web",
+    "description": "Used when popup panel is opened for a local web page"
   },
   "3pGroupDefault": {
     "message": "Mặc định",
@@ -96,8 +104,12 @@
     "description": "Text label heading the import area of custom filter lists"
   },
   "customListImportPlaceholder": {
-    "message": "Dán URL của danh sách bộ lọc vào đây để thêm",
+    "message": "URL của danh sách bộ lọc cần thêm",
     "description": "Placeholder text which describes the purpose of the textarea widget"
+  },
+  "customListImportUserScriptsInfo": {
+    "message": "Để áp dụng các bộ lọc trong danh sách đã nhập, bạn phải cấp cho uBO Lite quyền thực thi 'các tập lệnh người dùng'.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
   },
   "customFiltersImportExportLabel": {
     "message": "Nhập / Xuất",
@@ -108,8 +120,8 @@
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
   "userScriptsInfo": {
-    "message": "Để áp dụng các bộ lọc giao diện hoặc tập lệnh từ danh sách đã nhập, bạn phải cấp quyền cho uBO Lite chạy các tập lệnh người dùng. Mở trang tiện ích mở rộng của trình duyệt (<code>chrome://extensions</code> trong Chrome hoặc <code>about:addons</code> trong Firefox), mở chi tiết <b>uBO Lite</b> và bật <b>Cho phép tập lệnh người dùng</b> (còn được gọi là “tập lệnh của bên thứ ba chưa được xác minh”).",
-    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+    "message": "Mở trang tiện ích mở rộng của trình duyệt (<code>chrome://extensions</code> trong Chrome hoặc <code>about:addons</code> trong Firefox), mở chi tiết <b>uBO Lite</b> và bật <b>Cho phép tập lệnh người dùng</b> (còn được gọi là “tập lệnh của bên thứ ba chưa được xác minh”).",
+    "description": "A notice to inform user on how to enable 'user scripts' permission"
   },
   "aboutChangelog": {
     "message": "Nhật ký thay đổi",
@@ -152,11 +164,11 @@
     "description": "Label of 'Troubleshooting information' section in 'Report a filter issue' page"
   },
   "supportS6P1S1": {
-    "message": "Để tránh tạo thêm gánh nặng cho các tình nguyện viên hai báo cáo tương tự, hãy chắc chắn rằng chưa từng có vấn đề tương tự được báo cáo. <b>Lưu ý:</b> bấm vào nút này sẽ khiến nguồn của trang web bị gửi tới Github.",
+    "message": "Để tránh tạo thêm gánh nặng trùng báo cáo cho tình nguyện viên, hãy chắc chắn rằng vấn đề tương tự chưa được báo cáo. <b>Lưu ý:</b> bấm vào nút này sẽ gửi nguồn của trang web đến GitHub.",
     "description": "A paragraph in the filter issue reporter section"
   },
   "supportFindSpecificButton": {
-    "message": "Tìm các báo cáo tương tự trên Github",
+    "message": "Tìm báo cáo tương tự trên GitHub",
     "description": "A clickable link in the filter issue reporter section"
   },
   "supportS6URL": {
@@ -283,6 +295,10 @@
     "message": "Hộp thử nghiệm tạo bộ lọc",
     "description": "Header for filter-creation section in the dashboard"
   },
+  "sandboxEditorUserScriptsInfo": {
+    "message": "Để áp dụng các bộ lọc trong hộp thử nghiệm, bạn phải cấp cho uBO Lite quyền thực thi 'các tập lệnh người dùng'.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+  },
   "developerModeLabel": {
     "message": "Chế độ nhà phát triển",
     "description": "Label for a checkbox in the options page"
@@ -344,7 +360,7 @@
     "description": "A button to navigate to the blocked page"
   },
   "zapperTipEnter": {
-    "message": "Chuyển sang chế độ chặn phần tử tạm thời",
+    "message": "Xóa một phần tử",
     "description": "Tooltip for the button used to enter zapper mode"
   },
   "zapperTipQuit": {

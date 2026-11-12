@@ -35,6 +35,10 @@
     "message": "Zásady ochrany osobních údajů",
     "description": "Link to privacy policy on GitHub (English)"
   },
+  "aboutDocumentation": {
+    "message": "Dokumentace",
+    "description": "Link to documentation in About pane"
+  },
   "popupFilteringModeLabel": {
     "message": "režim filtrování",
     "description": "Label in the popup panel for the current filtering mode"
@@ -58,6 +62,10 @@
   "popupLessButton": {
     "message": "Méně",
     "description": "Label to be used to hide popup panel sections"
+  },
+  "popupNoWebsite": {
+    "message": "není to webová stránka",
+    "description": "Used when popup panel is opened for a local web page"
   },
   "3pGroupDefault": {
     "message": "Výchozí",
@@ -99,17 +107,21 @@
     "message": "Sem vložte adresu URL seznamu filtrů, které chcete přidat",
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
+  "customListImportUserScriptsInfo": {
+    "message": "Chcete-li použít filtry vzhledu nebo skriptové filtry z importovaných seznamů, musíte uBO Lite udělit oprávnění ke spouštění uživatelských skriptů.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+  },
   "customFiltersImportExportLabel": {
     "message": "Import / Export",
     "description": "Text label heading the import/export area of custom filters"
   },
   "customFiltersImportTextareaPlaceholder": {
-    "message": "Vložte sem konkrétní kosmetické/scriplet filtry, které chcete přidat",
+    "message": "Sem vložte konkrétní kosmetické/scriplet filtry, které chcete přidat",
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
   "userScriptsInfo": {
-    "message": "Chcete-li použít filtry vzhledu nebo skriptů z importovaných seznamů, musíte aplikaci uBO Lite udělit oprávnění ke spouštění uživatelských skriptů. Otevřete stránku rozšíření ve svém prohlížeči (<code>chrome://extensions</code> v prohlížeči Chrome nebo <code>about:addons</code> v prohlížeči Firefox), otevřete podrobnosti <b>uBO Lite</b> a zapněte volbu <b>Povolit uživatelské skripty</b> (také označované jako \"neověřené skripty třetích stran\").",
-    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+    "message": "Otevřete stránku s rozšířeními ve svém prohlížeči (<code>chrome://extensions</code> v prohlížeči Chrome nebo <code>about:addons</code> v prohlížeči Firefox), otevřete podrobnosti o rozšíření <b>uBO Lite</b> a zapněte volbu <b>Povolit uživatelské skripty</b> (také označované jako \"neověřené skripty třetích stran\").",
+    "description": "A notice to inform user on how to enable 'user scripts' permission"
   },
   "aboutChangelog": {
     "message": "Přehled změn",
@@ -248,7 +260,7 @@
     "description": "A short description for the editable field which lists trusted sites"
   },
   "noFilteringModePlaceholder": {
-    "message": "[jen názvy hostitelů]\nexample.com\ngames.example\n...",
+    "message": "[jen názvy hostitelů]\nexample.com\ngames.example\n…",
     "description": "Default text for in edit field"
   },
   "behaviorSectionLabel": {
@@ -282,6 +294,10 @@
   "sandboxEditorLabel": {
     "message": "Testovací prostředí pro vytváření filtrů",
     "description": "Header for filter-creation section in the dashboard"
+  },
+  "sandboxEditorUserScriptsInfo": {
+    "message": "Chcete-li v sandboxu aktivovat filtry vzhledu nebo skriptové filtry, musíte uBO Lite udělit oprávnění ke spouštění uživatelských skriptů.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
   },
   "developerModeLabel": {
     "message": "Vývojářský režim",
@@ -372,7 +388,7 @@
     "description": "An option in a dropdown list"
   },
   "developOptionDnrRulesOf": {
-    "message": "Pravidla DNR pro …",
+    "message": "Pravidla DNR pro…",
     "description": "A section header in a dropdown list"
   },
   "developOptionDynamicRuleset": {

@@ -4,7 +4,7 @@
     "description": "extension name."
   },
   "extShortDesc": {
-    "message": "Axır ki, prosessor və yaddaş yükünü azaldan səmərəli bir əngəlləyici var.",
+    "message": "Nəhayət, səmərəli bloklayıcı. Prosessor və yaddaşı yükləmir.",
     "description": "this will be in the Chrome web store: must be 132 characters or less"
   },
   "dashboardName": {
@@ -12,15 +12,15 @@
     "description": "English: uBlock₀ — Dashboard"
   },
   "dashboardUnsavedWarning": {
-    "message": "Xəbərdarlıq: dəyişiklikləriniz yadda saxlanılmayıb!",
+    "message": "Xəbərdarlıq! Saxlamadığınız dəyişikliklər var",
     "description": "A warning in the dashboard when navigating away from unsaved changes"
   },
   "dashboardUnsavedWarningStay": {
-    "message": "Qal",
+    "message": "Burada qal",
     "description": "Label for button to prevent navigating away from unsaved changes"
   },
   "dashboardUnsavedWarningIgnore": {
-    "message": "Əhəmiyyət vermə",
+    "message": "Məhəl qoyma",
     "description": "Label for button to ignore unsaved changes"
   },
   "settingsPageName": {
@@ -48,7 +48,7 @@
     "description": "appears as tab name in dashboard"
   },
   "statsPageName": {
-    "message": "uBlock₀ — Jurnal",
+    "message": "uBlock₀ — Qeydiyyat jurnalı",
     "description": "Title for the logger window"
   },
   "aboutPageName": {
@@ -60,7 +60,7 @@
     "description": "appears as tab name in dashboard"
   },
   "assetViewerPageName": {
-    "message": "uBlock₀ — Resurslar",
+    "message": "uBlock₀ — Resurs baxıcısı",
     "description": "Title for the asset viewer page"
   },
   "advancedSettingsPageName": {
@@ -68,19 +68,19 @@
     "description": "Title for the advanced settings page"
   },
   "popupPowerSwitchInfo": {
-    "message": "Klikləmə: Bu sayt üçün uBlock₀-u fəallaşdır/sıradan çıxart.\n\nCtrl+klikləmə: Yalnız bu səhifə üçün uBlock₀-u sıradan çıxart.",
+    "message": "Klikləmə: uBlock₀-u bu sayt üçün qapadın/aktivləşdirin.\n\n​Ctrl+klikləmə: uBlock₀-u yalnız bu səhifədə qapadın.",
     "description": "English: Click: disable/enable uBlock₀ for this site.\n\nCtrl+click: disable uBlock₀ only on this page."
   },
   "popupPowerSwitchInfo1": {
-    "message": "Bu sayt üçün uBlock₀-u sıradan çıxartmaq üçün klikləyin.\n\nYalnız bu səhifə üçün uBlock₀-u sıradan çıxartmaq üçün Ctrl+klikləyin.",
+    "message": "Bu sayt üçün uBlock₀-u qapatmaq məqsədilə klikləyin.\n\nYalnız bu səhifədə uBlock₀-u qapatmaq məqsədilə Ctrl+klikləyin.",
     "description": "Message to be read by screen readers"
   },
   "popupPowerSwitchInfo2": {
-    "message": "Bu saytda uBlock₀-u fəallaşdırmaq üçün klikləyin.",
+    "message": "Bu sayt üçün uBlock₀-u aktivləşdirmək məqsədilə klikləyin.",
     "description": "Message to be read by screen readers"
   },
   "popupBlockedRequestPrompt": {
-    "message": "tələb(request) bloklandı",
+    "message": "bloklanmış sorğular",
     "description": "English: requests blocked"
   },
   "popupBlockedOnThisPagePrompt": {
@@ -88,11 +88,11 @@
     "description": "English: on this page"
   },
   "popupBlockedStats": {
-    "message": "{{count}} və ya {{percent}}%",
+    "message": "{{count}} ({{percent}}%)",
     "description": "Example: 15 (13%)"
   },
   "popupBlockedSinceInstallPrompt": {
-    "message": "quraşdırmadan bəri",
+    "message": "quraşdırılandan bəri",
     "description": "English: since install"
   },
   "popupOr": {
@@ -100,15 +100,15 @@
     "description": "English: or"
   },
   "popupBlockedOnThisPage_v2": {
-    "message": "Bu səhifədə əngəllənən",
+    "message": "Bu səhifədə əngəllənmiş",
     "description": "For the new mobile-friendly popup design"
   },
   "popupBlockedSinceInstall_v2": {
-    "message": "Quraşdırmadan bəri əngəllənən",
+    "message": "Quraşdırılandan bəri bloklanıb",
     "description": "For the new mobile-friendly popup design"
   },
   "popupDomainsConnected_v2": {
-    "message": "Bağlantı qurulmuş domenlər",
+    "message": "Qoşulmuş domenlər",
     "description": "For the new mobile-friendly popup design"
   },
   "popupTipDashboard": {
@@ -116,7 +116,7 @@
     "description": "English: Click to open the dashboard"
   },
   "popupTipZapper": {
-    "message": "Element silmə rejiminə keç",
+    "message": "Element təmizləyicisi rejiminə keç",
     "description": "Tooltip for the element-zapper icon in the popup panel"
   },
   "popupTipPicker": {
@@ -124,7 +124,7 @@
     "description": "English: Enter element picker mode"
   },
   "popupTipLog": {
-    "message": "Jurnalı aç",
+    "message": "Qeydiyyat jurnalını aç",
     "description": "Tooltip used for the logger icon in the panel"
   },
   "popupTipReport": {
@@ -132,7 +132,7 @@
     "description": "Tooltip used for the 'chat' icon in the panel"
   },
   "popupTipNoPopups": {
-    "message": "Bu sayt üçün bütün açılan pəncələri aç/bağla",
+    "message": "​Bu sayt üçün bütün açılan pəncərələrin bloklanmasını tənzimlə",
     "description": "Tooltip for the no-popups per-site switch"
   },
   "popupTipNoPopups1": {
@@ -340,7 +340,7 @@
     "description": "Section for controlling user interface appearance"
   },
   "settingsThemeLabel": {
-    "message": "Mövzu",
+    "message": "Tema",
     "description": "Label for checkbox to enable a custom dark theme"
   },
   "settingsThemeAccent0Label": {
@@ -404,7 +404,7 @@
     "description": "Section for controlling advanced-user settings"
   },
   "settingsAdvancedSynopsis": {
-    "message": "Yalnız texniki istifadəçilərə uyğun parametrlər",
+    "message": "Yalnız təcrübəli istifadəçilər üçün nəzərdə tutulmuş funksiyalar",
     "description": "Description of section controlling advanced-user settings"
   },
   "settingsAdvancedUserSettings": {
@@ -456,7 +456,7 @@
     "description": "Describes the purpose of the 'Ignore generic cosmetic filters' feature."
   },
   "3pSuspendUntilListsAreLoaded": {
-    "message": "Filter siyahıları yüklənənə kimi şəbəkə fəaliyyətini dayandır",
+    "message": "Filtr siyahıları yüklənənə kimi şəbəkə fəaliyyətini dayandır",
     "description": "A checkbox in the 'Filter lists' pane"
   },
   "3pListsOfBlockedHostsHeader": {
@@ -472,7 +472,7 @@
     "description": "Filter lists section name"
   },
   "3pGroupAds": {
-    "message": "Reklam",
+    "message": "Reklamlar",
     "description": "Filter lists section name"
   },
   "3pGroupPrivacy": {
@@ -528,7 +528,7 @@
     "description": "used as a tooltip for the clock icon beside a list"
   },
   "3pUpdating": {
-    "message": "Yenilənir...",
+    "message": "Yenilənir…",
     "description": "used as a tooltip for the spinner icon beside a list"
   },
   "3pNetworkError": {
@@ -908,7 +908,7 @@
     "description": "A clickable link in the filter issue reporter section"
   },
   "supportS1H": {
-    "message": "Dokumentasiya",
+    "message": "Sənədləşmə",
     "description": "Header of 'Documentation' section in Support pane"
   },
   "supportS1P1": {
@@ -924,7 +924,7 @@
     "description": "First paragraph of 'Questions and support' section in Support pane"
   },
   "supportS3H": {
-    "message": "Filter problemləri / vebsəhifə işləmir",
+    "message": "Filtr problemləri / veb sayt işləmir",
     "description": "Header of 'Filter issues' section in Support pane"
   },
   "supportS3P1": {
@@ -952,7 +952,7 @@
     "description": "Header of 'Troubleshooting Information' section in Support pane"
   },
   "supportS5P1": {
-    "message": "Aşağıdaki könüllülər sizə probleminizi aradan qaldırmağa çalışırkən faydalı ola biləcək texniki məlumatdır.",
+    "message": "Aşağıda köməkçilər sizə kömək etmək üçün problemi həll etməyə çalışarkən faydalı ola biləcək texniki məlumatlar verilmişdir.",
     "description": "First paragraph of 'Troubleshooting Information' section in Support pane"
   },
   "supportS6H": {
@@ -976,7 +976,7 @@
     "description": "Label for the URL of the page"
   },
   "supportS6Select1": {
-    "message": "Səhifə...",
+    "message": "Veb səhifə…",
     "description": "Label for widget to select type of issue"
   },
   "supportS6Select1Option0": {
@@ -1056,7 +1056,7 @@
     "description": "Shown in the About pane"
   },
   "aboutBackupDataButton": {
-    "message": "Fayla yaz",
+    "message": "Fayla yaz…",
     "description": "Text for button to create a backup of all settings"
   },
   "aboutBackupFilename": {
@@ -1064,11 +1064,11 @@
     "description": "English: my-ublock-backup_{{datetime}}.txt"
   },
   "aboutRestoreDataButton": {
-    "message": "Fayldan bərpa et...",
+    "message": "Fayldan bərpa et…",
     "description": "English: Restore from file..."
   },
   "aboutResetDataButton": {
-    "message": "Standart parametrləri yüklə...",
+    "message": "Standart parametrləri yüklə…",
     "description": "English: Reset to default settings..."
   },
   "aboutRestoreDataConfirm": {
@@ -1236,11 +1236,11 @@
     "description": ""
   },
   "contextMenuBlockElementInFrame": {
-    "message": "Çərçivədəki elementi əngəllə",
+    "message": "Çərçivədəki elementi əngəllə…",
     "description": "An entry in the browser's contextual menu"
   },
   "contextMenuSubscribeToList": {
-    "message": "Filter siyahısına abunə ol",
+    "message": "Filter siyahısına abunə ol…",
     "description": "An entry in the browser's contextual menu"
   },
   "contextMenuTemporarilyAllowLargeMediaElements": {
@@ -1248,7 +1248,7 @@
     "description": "A context menu entry, present when large media elements have been blocked on the current site"
   },
   "contextMenuViewSource": {
-    "message": "Mənbə kodunu nəzərdən keçir...",
+    "message": "Mənbə kodunu nəzərdən keçir…",
     "description": "A context menu entry, to view the source code of the target resource"
   },
   "shortcutCapturePlaceholder": {

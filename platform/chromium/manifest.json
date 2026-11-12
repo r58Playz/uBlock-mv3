@@ -48,7 +48,7 @@
         "/js/contentscript.js"
       ],
       "all_frames": true,
-      "match_about_blank": true,
+      "match_origin_as_fallback": true,
       "run_at": "document_start"
     },
     {
@@ -80,7 +80,7 @@
     }
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
   },
   "default_locale": "en",
   "description": "__MSG_extShortDesc__",
@@ -92,7 +92,7 @@
   },
   "incognito": "split",
   "manifest_version": 3,
-  "minimum_chrome_version": "93.0",
+  "minimum_chrome_version": "138",
   "name": "uBlock Origin",
   "options_ui": {
     "page": "dashboard.html",
@@ -110,7 +110,8 @@
     "webRequestBlocking",
     "offscreen",
     "scripting",
-    "userScripts"
+    "userScripts",
+	"publicSuffix"
   ],
   "host_permissions": [
     "<all_urls>"

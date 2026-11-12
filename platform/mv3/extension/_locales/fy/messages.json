@@ -35,6 +35,10 @@
     "message": "Privacybelied",
     "description": "Link to privacy policy on GitHub (English)"
   },
+  "aboutDocumentation": {
+    "message": "Dokumintaasje",
+    "description": "Link to documentation in About pane"
+  },
   "popupFilteringModeLabel": {
     "message": "filtermodus",
     "description": "Label in the popup panel for the current filtering mode"
@@ -58,6 +62,10 @@
   "popupLessButton": {
     "message": "Minder",
     "description": "Label to be used to hide popup panel sections"
+  },
+  "popupNoWebsite": {
+    "message": "gjin website",
+    "description": "Used when popup panel is opened for a local web page"
   },
   "3pGroupDefault": {
     "message": "Standert",
@@ -96,20 +104,24 @@
     "description": "Text label heading the import area of custom filter lists"
   },
   "customListImportPlaceholder": {
-    "message": "Plak hjir de URL fan de ta te foegjen filterlist.",
+    "message": "URL fan de ta te foegjen filterlist",
     "description": "Placeholder text which describes the purpose of the textarea widget"
+  },
+  "customListImportUserScriptsInfo": {
+    "message": "Om kosmetyske of scriptletfilters fan ymportearre listen út ta te passen, moatte jo uBO Lite tastimming jaan foar it útfieren fan brûkersscripts.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
   },
   "customFiltersImportExportLabel": {
     "message": "Ymportearje / Eksportearje",
     "description": "Text label heading the import/export area of custom filters"
   },
   "customFiltersImportTextareaPlaceholder": {
-    "message": "Plak hjir spesifike kosmetyske filters om ta te foegjen",
+    "message": "Spesifike kosmetyske of scriptletfilters om ta te foegjen",
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
   "userScriptsInfo": {
-    "message": "Om kosmetyske of scriptletfilters fan ymportearre listen út ta te passen, moatte jo uBO Lite tastimming jaan foar it útfieren fan brûkersscripts. Iepenje de útwreidingsside fan jo browser (<code>chrome://extensions</code> yn Chrome of <code>about:addons</code> yn Firefox), iepenje de details fan <b>uBO Lite</b>, en skeakelje <b>Brûkersscripts tastean</b> (ek wol oanjûn as ‘Net-ferifiearte scripts fan tredden’) yn.",
-    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+    "message": "Iepenje de útwreidingsside fan jo browser (<code>chrome://extensions</code> yn Chrome of <code>about:addons</code> yn Firefox), iepenje de details fan <b>uBO Lite</b>, en skeakelje <b>Brûkersscripts tastean</b> (ek wol oanjûn as ‘Net-ferifiearre scripts fan tredden’) yn.",
+    "description": "A notice to inform user on how to enable 'user scripts' permission"
   },
   "aboutChangelog": {
     "message": "Wizigingslochboek",
@@ -282,6 +294,10 @@
   "sandboxEditorLabel": {
     "message": "Sandbox foar it oanmeitsjen fan filters",
     "description": "Header for filter-creation section in the dashboard"
+  },
+  "sandboxEditorUserScriptsInfo": {
+    "message": "Om kosmetyske of scriptletfilters fan de sandbox út ta te passen, moatte jo uBO Lite tastimming jaan foar it útfieren fan brûkersscripts.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
   },
   "developerModeLabel": {
     "message": "Untwikkelersmodus",

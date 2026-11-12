@@ -35,6 +35,10 @@
     "message": "Política de privacidade",
     "description": "Link to privacy policy on GitHub (English)"
   },
+  "aboutDocumentation": {
+    "message": "Documentação",
+    "description": "Link to documentation in About pane"
+  },
   "popupFilteringModeLabel": {
     "message": "modo de filtragem",
     "description": "Label in the popup panel for the current filtering mode"
@@ -59,6 +63,10 @@
     "message": "Menos",
     "description": "Label to be used to hide popup panel sections"
   },
+  "popupNoWebsite": {
+    "message": "não é um website",
+    "description": "Used when popup panel is opened for a local web page"
+  },
   "3pGroupDefault": {
     "message": "Predefinição",
     "description": "Header for a ruleset section in 'Filter lists pane'"
@@ -72,7 +80,7 @@
     "description": "Header for a ruleset section in 'Filter lists pane'"
   },
   "3pGroupMalware": {
-    "message": "Proteção contra malware, segurança",
+    "message": "Proteção contra malware e segurança",
     "description": "Header for a ruleset section in 'Filter lists pane'"
   },
   "3pGroupAnnoyances": {
@@ -88,35 +96,39 @@
     "description": "Header for a ruleset section in 'Filter lists pane'"
   },
   "3pGroupImported": {
-    "message": "Imported lists",
+    "message": "Listas importadas",
     "description": "Header for a ruleset section in 'Filter lists pane'"
   },
   "customListImportLabel": {
-    "message": "Add filter list…",
+    "message": "Adicionar lista de filtros…",
     "description": "Text label heading the import area of custom filter lists"
   },
   "customListImportPlaceholder": {
-    "message": "URL of the filter list to add",
+    "message": "URL da lista de filtros a adicionar",
     "description": "Placeholder text which describes the purpose of the textarea widget"
+  },
+  "customListImportUserScriptsInfo": {
+    "message": "Para aplicar filtros cosméticos ou de scriptlet provenientes de listas importadas, tem de conceder ao uBO Lite permissão para executar scripts do utilizador.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
   },
   "customFiltersImportExportLabel": {
     "message": "Importar/Exportar",
     "description": "Text label heading the import/export area of custom filters"
   },
   "customFiltersImportTextareaPlaceholder": {
-    "message": "Cole aqui filtros cosméticos específicos a adicionar",
+    "message": "Filtros cosméticos/de scriptlet específicos a adicionar",
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
   "userScriptsInfo": {
-    "message": "To enforce cosmetic or scriptlet filters from imported lists, you must grant uBO Lite permission to run user scripts. Open your browser's extensions page (<code>chrome://extensions</code> in Chrome or <code>about:addons</code> in Firefox), open <b>uBO Lite</b> details, and toggle on <b>Allow user scripts</b> (also referred to as “unverified third-party scripts”).",
-    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+    "message": "Abra a página de extensões do seu navegador (<code>chrome://extensions</code> no Chrome ou <code>about:addons</code> no Firefox), abra os detalhes do <b>uBO Lite</b> e ative a opção <b>Permitir scripts do utilizador</b> (também designada por \"scripts de terceiros não verificados\").",
+    "description": "A notice to inform user on how to enable 'user scripts' permission"
   },
   "aboutChangelog": {
     "message": "Registo de alterações",
     "description": ""
   },
   "aboutCode": {
-    "message": "Código fonte (GPLv3)",
+    "message": "Código-fonte (GPLv3)",
     "description": "English: Source code (GPLv3)"
   },
   "aboutContributors": {
@@ -124,7 +136,7 @@
     "description": "English: Contributors"
   },
   "aboutSourceCode": {
-    "message": "Código fonte",
+    "message": "Código-fonte",
     "description": "Link text to source code repo"
   },
   "aboutTranslations": {
@@ -276,12 +288,16 @@
     "description": "Label for a checkbox in the options page"
   },
   "enablePopupBlockLegend": {
-    "message": "Quando ativados, os filtros de correspondência fecharão automaticamente os separadores indesejados do navegador criados pelos websites.",
+    "message": "Quando ativado, os filtros correspondentes fecharão automaticamente os separadores indesejados do navegador criados pelos websites.",
     "description": "Short description for a checkbox in the options page"
   },
   "sandboxEditorLabel": {
     "message": "Sandbox para criação de filtros",
     "description": "Header for filter-creation section in the dashboard"
+  },
+  "sandboxEditorUserScriptsInfo": {
+    "message": "Para aplicar filtros cosméticos ou de scriptlet provenientes da sandbox, tem de conceder ao uBO Lite permissão para executar scripts do utilizador.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
   },
   "developerModeLabel": {
     "message": "Modo de programador",

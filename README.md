@@ -5,8 +5,6 @@
 uBlock Origin (uBO) MV3 Port
 </h1>
 
-[Jump to installation](#installation)
-
 ***
 
 uBlock Origin (uBO) is a CPU and memory-efficient [wide-spectrum content blocker][Blocking] for Chromium and Firefox. It blocks ads, trackers, coin miners, popups, annoying anti-blockers, malware sites, etc., by default using [EasyList][EasyList], [EasyPrivacy][EasyPrivacy], [Peter Lowe's Blocklist][Peter Lowe's Blocklist], [Online Malicious URL Blocklist][Malicious Blocklist], and uBO [filter lists][uBO Filters]. There are many other lists available to block even more. Hosts files are also supported. uBO uses the EasyList filter syntax and [extends][Extended Syntax] the syntax to work with custom rules and filters.
@@ -21,7 +19,6 @@ Ads, "unintrusive" or not, are just the visible portion of the privacy-invading 
 
 * [Documentation](#documentation)
 * [Installation](#installation)
-* [Issues](#issues)
 * [How it works](#how-it-works)
 * [Release History](#release-history)
 * [Translations](#translations)
@@ -48,40 +45,98 @@ Ads, "unintrusive" or not, are just the visible portion of the privacy-invading 
     </tbody>
 </table>
 
-Visit the [Wiki][Wiki] for documentation.
-
-For support, questions, or help, visit [/r/uBlockOrigin][Reddit].
-
 ## Installation
-**On Windows and macOS, Chrome aggressively blocks sideloaded extensions attempting to get webRequestBlocking permission:** sideloaded self-signed CRXs are disabled, and ExtensionInstallForcelist extensions with custom update URLs are blocked without proper enterprise management. The only way to install reliably on Windows or macOS is to locally build and load unpacked.
 
-Add `"blockddmmcjpfkbhanlgegpmjpfpfjka;https://ublock.r58playz.dev/update.xml"` to your ExtensionInstallForcelist policy.
+Chrome 138 or newer is required. To install, add
+`"blockddmmcjpfkbhanlgegpmjpfpfjka;https://ublock.r58playz.dev/update.xml"` to Chrome's
+`ExtensionInstallForcelist` policy, or install manually and use the
+`--allowlisted-extension-id=blockddmmcjpfkbhanlgegpmjpfpfjka` flag. This varies across operating systems and is
+heavily restricted on Windows and macOS. The flag must be present on every launch. Unlike a policy install, the flag-based install does
+not allow blocking handlers to return promises while uBO starts.
 
-To do this on Linux:
-1. Create `/etc/opt/chrome/policies/managed/policy.json` or `/etc/chromium/policies/managed/policy.json`. (or some other variant depending on your chrome install)
+### Linux
+
+None of the restrictions described below exist on Linux, on either Chrome or Chromium.
+
+1. Create `/etc/opt/chrome/policies/managed/policy.json`, or `/etc/chromium/policies/managed/policy.json` depending on your install.
 2. Write `{ "ExtensionInstallForcelist": ["blockddmmcjpfkbhanlgegpmjpfpfjka;https://ublock.r58playz.dev/update.xml"] }` into the file.
+3. Restart the browser, then enable `Allow User Scripts` in the extension's details page.
 
-Local build:
-1. Clone and `make`
-2. Load unpacked `dist/build/uBlock0.chromium` in the extensions UI
-3. Start chrome from the terminal with the command line flag `--allowlisted-extension-id=<sideloaded_uBO_id>`. You'll need to do this every time.
-4. Enable "Allow User Scripts" in the extension settings
-5. Restart Chrome
+For a signed CRX built from this checkout and tested entirely from local files,
+see [local policy testing](docs/local-policy-test.md).
 
-CRX build (last resort, only works reliably on Linux):
-1. Install the CRX
-2. Start chrome from the terminal with the command line flag `--allowlisted-extension-id=<sideloaded_uBO_id>`. You'll need to do this every time.
-3. Enable "Allow User Scripts" in the extension settings
-4. Restart Chrome
+### Windows and macOS
 
-## Issues
-1. Occasionally it tries to inject into a nonexistent frame? ~~No idea what's going on here~~ This looks like it's a browser bug, uBlock Origin Lite has the same issues
-2. Probably some of the MV2 APIs haven't been polyfilled yet so random parts are broken. It seems to be work consistently though
+Chrome refuses to force-install an extension from a non-Web-Store update URL unless the device has a management
+authority it considers trustworthy. Merely writing the policy locally via platform policy locations like regedit or
+plists does **not** establish that trust. Chrome shows the effective entry as `[BLOCKED]...` in `chrome://policy`.
+
+#### Option 1: give the device a trusted management authority
+
+This is the only way to get a full policy install, including promise-returning `webRequestBlocking` handlers.
+
+- **Windows Pro or higher**: join the device to Microsoft Entra ID (*Settings → Accounts → Access work or school →
+  Join this device to Microsoft Entra ID*), join an Active Directory domain, or enroll the device in an MDM.
+- **macOS**: enroll the Mac in an MDM, or bind it to a directory server, meaning an Open Directory node under
+  `/LDAPv3` or `/Active Directory`.
+- **Either platform**: enroll the browser in Chrome Enterprise Core and set the forcelist entry in the Google Admin
+  console. No local registry or plist entry is needed in this case.
+
+If the device is managed through a domain or MDM, deploy the policy through that management system. A locally applied
+machine policy can also be used after Chrome recognises the device as managed:
+
+- Windows: in regedit, create the key `HKEY_LOCAL_MACHINE\Software\Policies\Google\Chrome\ExtensionInstallForcelist`,
+  add a string value named `1` (or the next free number), and set it to
+  `blockddmmcjpfkbhanlgegpmjpfpfjka;https://ublock.r58playz.dev/update.xml`.
+- macOS: add `ExtensionInstallForcelist`, as an array containing
+  `blockddmmcjpfkbhanlgegpmjpfpfjka;https://ublock.r58playz.dev/update.xml`, to
+  `/Library/Managed Preferences/com.google.Chrome.plist`.
+
+Then restart the browser and enable `Allow User Scripts` in the extension's details page. If `chrome://policy` still
+shows the value with a `[BLOCKED]` prefix, the device is not being recognised as managed.
+
+#### Option 2: manual install plus a launch flag
+
+This works on any unmanaged Windows or macOS machine, but the extension ends up installed as an ordinary extension
+rather than by policy. **Promise-returning `webRequestBlocking` handlers are therefore unavailable.** While uBO starts,
+subresource requests are temporarily cancelled and affected tabs may be reloaded instead of requests being held until
+the filtering engine is ready.
+
+On branded Google Chrome, the packaged CRX must also be added to the machine-level `ExtensionInstallAllowlist` policy
+so Chrome does not disable it after installation. This is not needed for unbranded Chromium. The allowlist does not
+install the extension or replace the launch flag.
+
+1. Download the CRX from <https://ublock.r58playz.dev/>.
+2. Remove any `ExtensionInstallForcelist` entry for this extension.
+3. Add `blockddmmcjpfkbhanlgegpmjpfpfjka` to the machine-level `ExtensionInstallAllowlist` policy:
+   - Windows: in regedit, create `HKEY_LOCAL_MACHINE\Software\Policies\Google\Chrome\ExtensionInstallAllowlist`, add a string value named `1` (or the next free number), and set it to the extension ID.
+   - macOS: add `ExtensionInstallAllowlist`, as an array containing only the extension ID, to `/Library/Managed Preferences/com.google.Chrome.plist`.
+4. Completely quit Chrome, including background processes, restart it, and verify the allowlist in `chrome://policy`.
+5. Launch Chrome with `--allowlisted-extension-id=blockddmmcjpfkbhanlgegpmjpfpfjka`. Chrome will show an unsupported
+   command-line flag warning; do not suppress it with `--test-type`, which changes other browser behaviour.
+6. Open `chrome://extensions`, enable `Developer mode`, then drag the CRX onto the page and approve the installation.
+7. Enable `Allow User Scripts` in the extension's details page. Wait for the `!` badge to clear; reload the extension
+   if it does not.
+
+The flag is what makes Chromium grant the MV3 `webRequestBlocking` permission to this extension. Chrome must be
+started with it every time.
 
 ## How It Works
-- `webRequestBlocking` is allowed on MV3 extensions if they are forceinstalled by policy or allowlisted via the command line
-- Polyfilling `chrome.tabs.executeScript` and `chrome.tabs.insertCSS` is trivial with `chrome.scripting` and `chrome.userScripts`
-- uBO's background page doesn't use many DOM APIs, and polyfilling them is trivial
+
+- This port does not convert uBO's filtering engine to `declarativeNetRequest`. The existing engine runs in an MV3
+  service worker and returns blocking decisions through `webRequest`.
+- Chromium normally grants `webRequestBlocking` to MV3 extensions only when they are installed by policy. The
+  `--allowlisted-extension-id` flag bypasses that permission check, but does not turn a manual install into a policy
+  install.
+    - Only a real policy install may return promises from blocking handlers. This port uses them to hold requests while
+      the filtering engine starts.
+    - A manual install instead temporarily cancels subresource requests during startup and reloads affected tabs after
+      the engine is ready, like Chrome on MV2. Normal filtering decisions are synchronous after startup.
+- `chrome.tabs.executeScript`, `chrome.tabs.insertCSS`, and `chrome.tabs.removeCSS` are implemented with
+  `chrome.scripting` and `chrome.userScripts`.
+- Small DOM and `XMLHttpRequest` shims provide the background-page APIs uBO uses, and a periodic extension API call
+  keeps the service worker active.
+- Web Workers run in a lazily created offscreen document and communicate with the service worker through message ports.
 
 ## Release History
 
@@ -111,11 +166,9 @@ If you ever want to contribute something, think about the people working hard to
 [Performance]: https://www.debugbear.com/blog/chrome-extensions-website-performance#the-impact-of-ad-blocking-on-website-performance
 [EasyPrivacy]: https://easylist.to/#easyprivacy
 [Thunderbird]: https://addons.thunderbird.net/thunderbird/addon/ublock-origin/
-[Chrome Dev]: https://chromewebstore.google.com/detail/ublock-origin-development/cgbcahbpdhpcegmbfconppldiemgcoii
 [EasyList]: https://easylist.to/#easylist
 [Mozilla]: https://addons.mozilla.org/addon/ublock-origin/
 [Crowdin]: https://crowdin.com/project/ublock
-[Chrome]: https://chromewebstore.google.com/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm
 [Reddit]: https://www.reddit.com/r/uBlockOrigin/
 [Theft]: https://x.com/LeaVerou/status/518154828166725632
 [Opera]: https://addons.opera.com/extensions/details/ublock/

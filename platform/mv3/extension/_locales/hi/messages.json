@@ -20,7 +20,7 @@
     "description": "appears as tab name in dashboard"
   },
   "customFiltersPageName": {
-    "message": "Custom filters",
+    "message": "निर्मित फ़िल्टर",
     "description": "appears as tab name in dashboard"
   },
   "developPageName": {
@@ -34,6 +34,10 @@
   "aboutPrivacyPolicy": {
     "message": "गोपनीयता नीति",
     "description": "Link to privacy policy on GitHub (English)"
+  },
+  "aboutDocumentation": {
+    "message": "प्रलेखन",
+    "description": "Link to documentation in About pane"
   },
   "popupFilteringModeLabel": {
     "message": "फ़िल्टरिंग मोड",
@@ -58,6 +62,10 @@
   "popupLessButton": {
     "message": "कम",
     "description": "Label to be used to hide popup panel sections"
+  },
+  "popupNoWebsite": {
+    "message": "not a website",
+    "description": "Used when popup panel is opened for a local web page"
   },
   "3pGroupDefault": {
     "message": "डिफॉल्ट",
@@ -88,28 +96,32 @@
     "description": "Header for a ruleset section in 'Filter lists pane'"
   },
   "3pGroupImported": {
-    "message": "Imported lists",
+    "message": "आयातित सूचियाँ",
     "description": "Header for a ruleset section in 'Filter lists pane'"
   },
   "customListImportLabel": {
-    "message": "Add filter list…",
+    "message": "फ़िल्टर सूची जोड़ें…",
     "description": "Text label heading the import area of custom filter lists"
   },
   "customListImportPlaceholder": {
-    "message": "URL of the filter list to add",
+    "message": "जोड़ने के लिए फ़िल्टर सूची का URL",
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
+  "customListImportUserScriptsInfo": {
+    "message": "To enforce cosmetic or scriptlet filters from imported lists, you must grant uBO Lite permission to run user scripts.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+  },
   "customFiltersImportExportLabel": {
-    "message": "Import / Export",
+    "message": "आयात / निर्यात",
     "description": "Text label heading the import/export area of custom filters"
   },
   "customFiltersImportTextareaPlaceholder": {
-    "message": "Specific cosmetic/scriptlet filters to add",
+    "message": "जोड़ने के लिए विशिष्ट कॉस्मेटिक/स्क्रिप्टलेट फ़िल्टर",
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
   "userScriptsInfo": {
-    "message": "To enforce cosmetic or scriptlet filters from imported lists, you must grant uBO Lite permission to run user scripts. Open your browser's extensions page (<code>chrome://extensions</code> in Chrome or <code>about:addons</code> in Firefox), open <b>uBO Lite</b> details, and toggle on <b>Allow user scripts</b> (also referred to as “unverified third-party scripts”).",
-    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+    "message": "अपने ब्राउज़र का एक्सटेंशन पेज खोलें (Chrome में <code>chrome://extensions</code> या Firefox में <code>about:addons</code>), <b>uBO Lite</b> विवरण खोलें, और <b>उपयोगकर्ता स्क्रिप्ट की अनुमति दें</b> (जिसे \"असत्यापित तृतीय-पक्ष स्क्रिप्ट\" भी कहा जाता है) को चालू करें।",
+    "description": "A notice to inform user on how to enable 'user scripts' permission"
   },
   "aboutChangelog": {
     "message": "परिवर्तन पत्र",
@@ -152,7 +164,7 @@
     "description": "Label of 'Troubleshooting information' section in 'Report a filter issue' page"
   },
   "supportS6P1S1": {
-    "message": "To avoid burdening volunteers with duplicate reports, please verify that the issue has not already been reported. <b>Note:</b> clicking the button will cause the page's origin to be sent to GitHub.",
+    "message": "डुप्लिकेट रिपोर्टों से स्वयंसेवकों पर बोझ न डालने के लिए, कृपया सत्यापित करें कि समस्या की पहले से रिपोर्ट नहीं की गई है। <b>नोट:</b> बटन पर क्लिक करने से पृष्ठ का मूल (origin) GitHub को भेजा जाएगा।",
     "description": "A paragraph in the filter issue reporter section"
   },
   "supportFindSpecificButton": {
@@ -200,11 +212,11 @@
     "description": "An entry in the widget used to select the type of issue"
   },
   "supportS6Checkbox1": {
-    "message": "Label the web page as “NSFW” (<a href=\"https://wikipedia.org/wiki/Not_safe_for_work\">“Not Safe For Work”</a>)",
+    "message": "वेब पृष्ठ को “NSFW” (<a href=\"https://wikipedia.org/wiki/Not_safe_for_work\">“कार्य के लिए सुरक्षित नहीं”</a>) के रूप में लेबल करें",
     "description": "A checkbox to use for NSFW sites"
   },
   "supportReportSpecificButton": {
-    "message": "Create new report on GitHub",
+    "message": "GitHub पर नई रिपोर्ट बनाएं",
     "description": "Text for button which opens an external web page in Support pane"
   },
   "defaultFilteringModeSectionLabel": {
@@ -264,55 +276,59 @@
     "description": "Label for a checkbox in the options page"
   },
   "enableStrictBlockLabel": {
-    "message": "Enable strict blocking",
+    "message": "सख्त ब्लॉकिंग सक्षम करें",
     "description": "Label for a checkbox in the options page"
   },
   "enableStrictBlockLegend": {
-    "message": "Navigation to potentially undesirable sites will be blocked, and you will be offered the option to proceed.",
+    "message": "संभावित अवांछनीय साइटों पर नेविगेशन ब्लॉक कर दिया जाएगा, और आपको आगे बढ़ने का विकल्प दिया जाएगा।",
     "description": "Short description for a checkbox in the options page"
   },
   "enablePopupBlockLabel": {
-    "message": "Enable pop-up blocking",
+    "message": "पॉप-अप ब्लॉकिंग सक्षम करें",
     "description": "Label for a checkbox in the options page"
   },
   "enablePopupBlockLegend": {
-    "message": "When active, matching filters will automatically close unwanted browser tabs created by websites.",
+    "message": "सक्रिय होने पर, मिलान फ़िल्टर वेबसाइटों द्वारा बनाए गए अवांछित ब्राउज़र टैब को स्वचालित रूप से बंद कर देंगे।",
     "description": "Short description for a checkbox in the options page"
   },
   "sandboxEditorLabel": {
-    "message": "Filter-creation sandbox",
+    "message": "फ़िल्टर-निर्माण सैंडबॉक्स",
     "description": "Header for filter-creation section in the dashboard"
   },
+  "sandboxEditorUserScriptsInfo": {
+    "message": "To enforce cosmetic or scriptlet filters from the sandbox, you must grant uBO Lite permission to run user scripts.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+  },
   "developerModeLabel": {
-    "message": "Developer mode",
+    "message": "डेवलपर मोड",
     "description": "Label for a checkbox in the options page"
   },
   "developerModeLegend": {
-    "message": "Enables access to features suitable for technical users.",
+    "message": "तकनीकी उपयोगकर्ताओं के लिए उपयुक्त सुविधाओं तक पहुंच सक्षम करता है।",
     "description": "Short description for a checkbox in the options page"
   },
   "settingsBackupRestoreLabel": {
-    "message": "Backup",
+    "message": "बैकअप",
     "description": "The header text for the back up/restore section"
   },
   "settingsBackupRestoreSummary": {
-    "message": "Back up your custom settings to a file, or restore your custom settings from a file.",
+    "message": "अपनी कस्टम सेटिंग्स को फ़ाइल में बैकअप करें, या फ़ाइल से अपनी कस्टम सेटिंग्स पुनर्स्थापित करें।",
     "description": "A summary description of the back up/restore section."
   },
   "settingsBackupRestoreLegend": {
-    "message": "Restoring will overwrite all your current custom settings.",
+    "message": "पुनर्स्थापना आपकी सभी वर्तमान कस्टम सेटिंग्स को अधिलेखित कर देगी।",
     "description": "Important information about the back up/restore section."
   },
   "findListsPlaceholder": {
-    "message": "Find lists",
+    "message": "सूचियाँ खोजें",
     "description": "Placeholder for the input field used to find lists"
   },
   "strictblockTitle": {
-    "message": "Page blocked",
+    "message": "पृष्ठ ब्लॉक किया गया",
     "description": "Web page title for the strict-blocked page"
   },
   "strictblockSentence1": {
-    "message": "uBO Lite has prevented the following page from loading:",
+    "message": "uBO लाईट ने इस पेज को लोड होने से रोक दिया हैं:",
     "description": "Sentence used in the strict-blocked page"
   },
   "strictblockReasonSentence1": {
@@ -324,39 +340,39 @@
     "description": "Text warning about an incoming redirect"
   },
   "strictblockNoParamsPrompt": {
-    "message": "without parameters",
+    "message": "पैरामीटर के बिना",
     "description": "Label to be used for the parameter-less URL"
   },
   "strictblockBack": {
-    "message": "Go back",
+    "message": "पीछे जाएं",
     "description": "A button to go back to the previous web page"
   },
   "strictblockClose": {
-    "message": "Close this window",
+    "message": "इस विंडो को बंद करें",
     "description": "A button to close the current tab"
   },
   "strictblockDontWarn": {
-    "message": "Don't warn me again about this site",
+    "message": "इस साइट के बारे में मुझे फिर से चेतावनी न दें",
     "description": "Label for checkbox in document-blocked page"
   },
   "strictblockProceed": {
-    "message": "Proceed",
+    "message": "आगे बढ़ें",
     "description": "A button to navigate to the blocked page"
   },
   "zapperTipEnter": {
-    "message": "Remove an element",
+    "message": "एक तत्व हटाएँ",
     "description": "Tooltip for the button used to enter zapper mode"
   },
   "zapperTipQuit": {
-    "message": "Exit element zapper mode",
+    "message": "तत्व ज़ैपर मोड से बाहर निकलें",
     "description": "Tooltip for the button used to exit zapper mode"
   },
   "pickerTipEnter": {
-    "message": "Create a custom filter",
+    "message": "निर्मित फ़िल्टर बनाएं",
     "description": "Label for the menu entry to create cosmetic filters"
   },
   "unpickerTipEnter": {
-    "message": "Remove a custom filter",
+    "message": "एक कस्टम फ़िल्टर हटाएँ",
     "description": "Label for the menu entry to delete cosmetic filters"
   },
   "developDropdownLabel": {
@@ -364,23 +380,23 @@
     "description": "A label of a dropdown list"
   },
   "developOptionFilteringModeDetails": {
-    "message": "Filtering mode details",
+    "message": "फ़िल्टरिंग मोड विवरण",
     "description": "An option in a dropdown list"
   },
   "developOptionCustomDnrRules": {
-    "message": "Custom DNR rules",
+    "message": "कस्टम DNR नियम",
     "description": "An option in a dropdown list"
   },
   "developOptionDnrRulesOf": {
-    "message": "DNR rules of …",
+    "message": "के DNR नियम …",
     "description": "A section header in a dropdown list"
   },
   "developOptionDynamicRuleset": {
-    "message": "Dynamic ruleset",
+    "message": "गतिशील नियमसेट",
     "description": "An option in a dropdown list"
   },
   "developOptionSessionRuleset": {
-    "message": "Session ruleset",
+    "message": "सत्र नियमसेट",
     "description": "An option in a dropdown list"
   },
   "saveButton": {
@@ -392,7 +408,7 @@
     "description": "Text for buttons used to revert changes"
   },
   "addButton": {
-    "message": "Add",
+    "message": "जोड़ें",
     "description": "Text for buttons used to add content"
   },
   "importAndAppendButton": {
@@ -404,19 +420,19 @@
     "description": "Text for buttons used to export content"
   },
   "backupButton": {
-    "message": "Back up…",
+    "message": "बैकअप करें…",
     "description": "Text for buttons used to back up content"
   },
   "restoreButton": {
-    "message": "Restore…",
+    "message": "पुनर्स्थापित करें…",
     "description": "Text for buttons used to restore content"
   },
   "resetToDefaultButton": {
-    "message": "Reset to default settings…",
+    "message": "डिफ़ॉल्ट सेटिंग्स पर रीसेट करें…",
     "description": "Text for buttons used to reset configurations to default"
   },
   "resetToDefaultConfirm": {
-    "message": "All your custom settings will be removed. Do you really want to reset to default settings?",
+    "message": "आपकी सभी कस्टम सेटिंग्स हटा दी जाएंगी। क्या आप वास्तव में डिफ़ॉल्ट सेटिंग्स पर रीसेट करना चाहते हैं?",
     "description": "Message asking user to confirm reset to default settings"
   },
   "dnrRulesWarning": {
@@ -424,27 +440,27 @@
     "description": "Short description of the DNR rules editor pane"
   },
   "dnrRulesCountInfo": {
-    "message": "Number of registered rules: {count}",
+    "message": "पंजीकृत नियमों की संख्या: {count}",
     "description": "Short sentence to report the number of currently registered DNR rules"
   },
   "pickerSliderLabel": {
-    "message": "Move the slider to select the best match",
+    "message": "सर्वश्रेष्ठ मिलान चुनने के लिए स्लाइडर को घुमाएँ",
     "description": "Label to describe the purpose of the slider"
   },
   "pickerPick": {
-    "message": "Pick",
+    "message": "चुनें",
     "description": "Text for the button to re-enter element-picking mode"
   },
   "pickerPreview": {
-    "message": "Preview",
+    "message": "पूर्वावलोकन",
     "description": "Text for the button to activate preview mode"
   },
   "pickerCreate": {
-    "message": "Create",
+    "message": "बनाएँ",
     "description": "Text for the button to create the filter"
   },
   "unpickerUsage": {
-    "message": "Select a filter below to highlight matching elements in the web page. Click the trash can to remove a filter.",
+    "message": "वेब पृष्ठ में मिलान तत्वों को हाइलाइट करने के लिए नीचे एक फ़िल्टर चुनें। फ़िल्टर हटाने के लिए कूड़ेदान पर क्लिक करें।",
     "description": "Summary description on how to use the tool to remove custom filters"
   }
 }

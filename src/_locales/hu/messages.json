@@ -960,7 +960,7 @@
     "description": "Header of 'Report a filter issue' section in Support pane"
   },
   "supportS6P1S1": {
-    "message": "Az önkéntesek terhelésének csökkentése érdekében győződjön meg róla, hogy a hiba még nem lett bejelentve.",
+    "message": "Az önkéntesek terhelésének csökkentése érdekében győződjön meg róla, hogy a hiba még nem lett jelentve. <b>Megjegyzés:</b> a gombra kattintás azt okozza, hogy a lap eredete el lesz küldve a GitHub részére.",
     "description": "A paragraph in the filter issue reporter section"
   },
   "supportS6P2S1": {
@@ -1272,7 +1272,7 @@
     "description": "Label for keyboard shortcut used to toggle cosmetic filtering"
   },
   "toggleJavascript": {
-    "message": "Javascript be/ki",
+    "message": "JavaScript be/ki",
     "description": "Label for keyboard shortcut used to toggle no-scripting switch"
   },
   "relaxBlockingMode": {

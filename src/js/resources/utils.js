@@ -23,9 +23,6 @@
 import { registerScriptlet } from './base.js';
 import { safeSelf } from './safe-self.js';
 
-// Externally added to the private namespace in which scriptlets execute.
-/* global scriptletGlobals */
-
 /******************************************************************************/
 
 export function getRandomTokenFn() {
@@ -62,7 +59,7 @@ registerScriptlet(getExceptionTokenFn, {
 
 /******************************************************************************/
 
-export function trapPropertyFn(propChain, handler) {
+export function trapPropertyFn(propChain, handler, options = {}) {
     if ( propChain === '' ) { return; }
     let owner = self;
     let prop = propChain;
@@ -85,7 +82,9 @@ export function trapPropertyFn(propChain, handler) {
             if ( entry === undefined ) { return; }
             let r = entry.value;
             for ( const desc of entry.stack ) {
-                try { r = desc.get(); } catch { }
+                try { r = desc.get(); } catch (e) {
+                    if ( entry.canThrow ) { throw e; }
+                }
             }
             return r;
         };
@@ -94,7 +93,9 @@ export function trapPropertyFn(propChain, handler) {
             if ( entry === undefined ) { return; }
             entry.value = value;
             for ( const desc of entry.stack ) {
-                try { desc.set(value); } catch { }
+                try { desc.set(value); } catch (e) {
+                    if ( entry.canThrow ) { throw e; }
+                }
             }
         };
     }
@@ -109,6 +110,7 @@ export function trapPropertyFn(propChain, handler) {
     };
     entry.stack.push(handler);
     if ( entry.stack.length > 1 ) { return entry.value; }
+    Object.assign(entry, options);
     handlers.set(prop, entry);
     const desc = safe.Object_getOwnPropertyDescriptor(owner, prop);
     if ( desc instanceof safe.Object ) {
@@ -119,10 +121,10 @@ export function trapPropertyFn(propChain, handler) {
     try {
         safe.Object_defineProperty(owner, prop, {
             get() {
-                return trapPropertyFn.getter(this, prop);
+                return trapPropertyFn.getter(owner, prop);
             },
             set(value) {
-                trapPropertyFn.setter(this, prop, value);
+                trapPropertyFn.setter(owner, prop, value);
             }
         });
     } catch {
@@ -278,23 +280,8 @@ export function generateContentFn(trusted, directive) {
         return randomize(len | 0);
     }
     if ( directive.startsWith('war:') ) {
-        if ( scriptletGlobals.warOrigin === undefined ) { return ''; }
-        return new Promise(resolve => {
-            const warOrigin = scriptletGlobals.warOrigin;
-            const warName = directive.slice(4);
-            const fullpath = [ warOrigin, '/', warName ];
-            const warSecret = scriptletGlobals.warSecret;
-            if ( warSecret !== undefined ) {
-                fullpath.push('?secret=', warSecret);
-            }
-            const warXHR = new safe.XMLHttpRequest();
-            warXHR.responseType = 'text';
-            warXHR.onloadend = ev => {
-                resolve(ev.target.responseText || '');
-            };
-            warXHR.open('GET', fullpath.join(''));
-            warXHR.send();
-        }).catch(( ) => '');
+        // TODO: resources should be fetched by messaging ISOLATED world
+        return '';
     }
     if ( directive.startsWith('join:') ) {
         const parts = directive.slice(7)
@@ -367,10 +354,8 @@ export function lookupElementsFn(directive, until = 0) {
             if ( elem.openOrClosedShadowRoot ) { // Firefox
                 return elem.openOrClosedShadowRoot;
             }
-            if ( typeof chrome === 'object' ) { // Chromium
-                if ( chrome.dom && chrome.dom.openOrClosedShadowRoot ) {
-                    return chrome.dom.openOrClosedShadowRoot(elem);
-                }
+            if ( self.chrome?.dom?.openOrClosedShadowRoot ) { // Chromium
+                return self.chrome.dom.openOrClosedShadowRoot(elem);
             }
             return elem.shadowRoot;
         };

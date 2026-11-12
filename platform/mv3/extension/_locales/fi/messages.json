@@ -35,6 +35,10 @@
     "message": "Tietosuojakäytäntö",
     "description": "Link to privacy policy on GitHub (English)"
   },
+  "aboutDocumentation": {
+    "message": "Ohjeet",
+    "description": "Link to documentation in About pane"
+  },
   "popupFilteringModeLabel": {
     "message": "suodatustila",
     "description": "Label in the popup panel for the current filtering mode"
@@ -58,6 +62,10 @@
   "popupLessButton": {
     "message": "Vähemmän",
     "description": "Label to be used to hide popup panel sections"
+  },
+  "popupNoWebsite": {
+    "message": "not a website",
+    "description": "Used when popup panel is opened for a local web page"
   },
   "3pGroupDefault": {
     "message": "Oletus",
@@ -96,20 +104,24 @@
     "description": "Text label heading the import area of custom filter lists"
   },
   "customListImportPlaceholder": {
-    "message": "Lisää lista liittämällä sen URL-osoite tähän",
+    "message": "Lisättävän listan URL-osoite",
     "description": "Placeholder text which describes the purpose of the textarea widget"
+  },
+  "customListImportUserScriptsInfo": {
+    "message": "Tuotujen listojen kosmeetisten ja scriplet‑suodattimien käyttämiseksi, on uBO Litelle myönnettävä oikeus suorittaa käyttäjäskriptejä.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
   },
   "customFiltersImportExportLabel": {
     "message": "Tuonti / Vienti",
     "description": "Text label heading the import/export area of custom filters"
   },
   "customFiltersImportTextareaPlaceholder": {
-    "message": "Liitä lisättävät kosmeettiset/scriptlet-suodattimet tähän",
+    "message": "Lisättävät kosmeettiset/scriptlet-suodattimet",
     "description": "Placeholder text which describes the purpose of the textarea widget"
   },
   "userScriptsInfo": {
-    "message": "Tuotujen listojen kosmeetisten ja scriplet‑suodattimien käyttämiseksi, on uBO Litelle myönnettävä oikeus suorittaa käyttäjäskriptejä. Avaa selaimesi laajennussivu (<code>chrome://extensions</code> Chromessa, <code>about:addons</code> Firefoxissa), valitse <b>uBO Lite</b> ‑laajennuksen tiedot ja aktivoi käyttöoikeus <b>Salli käyttäjäskriptit</b> (Chrome) tai <b>Salli vahvistamattomien kolmannen osapuolen komentosarjojen pääsy tietoihisi</b> (Firefox).",
-    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
+    "message": "Avaa selaimesi laajennussivu (<code>chrome://extensions</code> Chromessa, <code>about:addons</code> Firefoxissa), valitse <b>uBO Liten</b> tiedot ja aktivoi käyttöoikeus <b>Salli käyttäjäskriptit</b> tai <b>Salli vahvistamattomien kolmannen osapuolen komentosarjojen pääsy tietoihisi</b>.",
+    "description": "A notice to inform user on how to enable 'user scripts' permission"
   },
   "aboutChangelog": {
     "message": "Muutoshistoria",
@@ -282,6 +294,10 @@
   "sandboxEditorLabel": {
     "message": "Vapaa suodatinluonti",
     "description": "Header for filter-creation section in the dashboard"
+  },
+  "sandboxEditorUserScriptsInfo": {
+    "message": "Vapaan suodatinluonnin kosmeetisten ja scriplet‑suodattimien käyttämiseksi, on uBO Litelle myönnettävä oikeus suorittaa käyttäjäskriptejä.",
+    "description": "A notice to inform user that the enforcement of some filters requires permission to execute 'user scripts'"
   },
   "developerModeLabel": {
     "message": "Kehittäjätila",
