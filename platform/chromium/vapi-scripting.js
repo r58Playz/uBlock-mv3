@@ -65,7 +65,7 @@ function uBO_assembleIsolatedCode(details) {
     }
     code.push(
         `(${uBO_isolatedCode.toString()})(`,
-        JSON.stringify(`// ${details.hostname}\n${mainCode}`),
+        JSON.stringify(mainCode ? `// ${details.hostname}\n${mainCode}` : ''),
         `);`
     );
     code.push('})();');
@@ -74,6 +74,43 @@ function uBO_assembleIsolatedCode(details) {
     return code.slice(0, match.index) +
         isolatedCode +
         code.slice(match.index + match[0].length);
+}
+
+// PeerSky: main-world scriptlets go in with userScripts.execute in the MAIN
+// world, as this port did before 1.76. In PeerSky the user script world has
+// no CSP of its own, so the <script> element it adds is held to the page's
+// CSP and Trusted Types: YouTube refused it and none of its scriptlets ran.
+function uBO_assembleMainCode(details) {
+    const { mainCode = '' } = details;
+    if ( Boolean(mainCode) === false ) { return; }
+    const code = [
+        `// ${details.hostname}`,
+        '(function uBO_mainWorldWrapper() {',
+        `if ( self[Symbol.for('uBO_scriptletsInjected')] !== undefined ) { return; }`,
+        'const hostname = document.location.hostname;',
+        `if ( hostname !== '' && hostname !== ${JSON.stringify(details.hostname)} ) { return; }`,
+    ];
+    if ( details.earlyBailoutCode ) {
+        code.push(details.earlyBailoutCode);
+    }
+    code.push(
+        `self[Symbol.for('uBO_scriptletsInjected')] = true;`,
+        mainCode,
+        '})();'
+    );
+    return code.join('\n');
+}
+
+function injectMainWorld(target, code) {
+    try {
+        browser.userScripts.execute({
+            target,
+            js: [ { code } ],
+            world: 'MAIN',
+            injectImmediately: true,
+        }).catch(( ) => { });
+    } catch {
+    }
 }
 
 /******************************************************************************/
@@ -106,9 +143,10 @@ function registerContentScript(url) {
     if ( hostname === '' ) { return; }
     if ( contentScriptDict.has(hostname) ) { return; }
     const result = getContentScripts(url);
-    const code = uBO_assembleIsolatedCode(result) ?? null;
+    const code = uBO_assembleIsolatedCode({ ...result, mainCode: '' }) ?? null;
+    const mainWorldCode = uBO_assembleMainCode(result) ?? null;
     let ret;
-    contentScriptDict.set(hostname, ret = { code, bcSecret: result.scriptletGlobals.bcSecret, t: Date.now() });
+    contentScriptDict.set(hostname, ret = { code, mainWorldCode, bcSecret: result.scriptletGlobals.bcSecret, t: Date.now() });
     return ret;
 }
 
@@ -167,13 +205,18 @@ function onCommitted(details) {
     const hostname = hostnameFromURI(url);
     if ( hostname === '' ) { return; }
     const entry = contentScriptDict.get(hostname);
-    if ( Boolean(entry?.code) === false ) { return; }
-    webext.tabs.executeScript(tabId, {
-        frameId,
-        matchAboutBlank: true,
-        runAt: 'document_start',
-        code: entry.code,
-    });
+    if ( Boolean(entry?.code || entry?.mainWorldCode) === false ) { return; }
+    if ( entry.mainWorldCode ) {
+        injectMainWorld({ tabId, frameIds: [ frameId ] }, entry.mainWorldCode);
+    }
+    if ( entry.code ) {
+        webext.tabs.executeScript(tabId, {
+            frameId,
+            matchAboutBlank: true,
+            runAt: 'document_start',
+            code: entry.code,
+        });
+    }
     if ( entry.bcSecret ) {
         vAPI.injectIsolatedFunc(tabId, frameId, initCommChannel, [ entry.bcSecret ]);
     }
@@ -227,13 +270,18 @@ export async function start(fn) {
         const { id, url } = tab;
         rememberFrame({ tabId: id, frameId: 0, parentFrameId: -1, url });
         const entry = registerContentScript(url);
-        if ( entry?.code ) {
-            webext.tabs.executeScript(id, {
-                allFrames: true,
-                matchAboutBlank: true,
-                runAt: 'document_start',
-                code: entry.code,
-            });
+        if ( entry?.code || entry?.mainWorldCode ) {
+            if ( entry.mainWorldCode ) {
+                injectMainWorld({ tabId: id, allFrames: true }, entry.mainWorldCode);
+            }
+            if ( entry.code ) {
+                webext.tabs.executeScript(id, {
+                    allFrames: true,
+                    matchAboutBlank: true,
+                    runAt: 'document_start',
+                    code: entry.code,
+                });
+            }
             if ( entry.bcSecret ) {
                 vAPI.injectIsolatedFunc(id, "all", initCommChannel, [ entry.bcSecret ]);
             }
